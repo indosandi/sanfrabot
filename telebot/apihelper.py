@@ -13,9 +13,12 @@ try:
     format_header_param = fields.format_header_param
 except ImportError:
     format_header_param = None
-import telebot
-from telebot import types
-from telebot import util
+
+import tele as telebot
+# from telebot
+import types
+# from telebot \
+import util
 
 logger = telebot.logger
 proxy = None
