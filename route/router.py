@@ -30,8 +30,11 @@ class Router(object):
         # decor=self.bot.message_handler(commands=['start'],regexp="st",func=None,content_types=['location', 'venue','contact','text'])
 
         decor=self.bot.message_handler(commands=['start','reset'],func=None)
+        # decor=self.bot.message_handler(commands=['start','reset'],func=lambda message: True,content_types=['location','venue','contact'])
         decor(self.routeInit)
         decor=self.bot.message_handler(regexp=".",func=None,content_types=['text'])
+        decor(self.route)
+        decor=self.bot.message_handler(func=lambda message: True,content_types=['location','venue','contact'])
         decor(self.route)
 
     def genRandomRef(self):
@@ -61,13 +64,15 @@ class Router(object):
         else:
             logger.error('NO STATE IS POSSIBLE')
         nextCmd = self.getWordMessage(message)
+        print(nextCmd)
         if (self.currentState.decideNext(message, self.inputDef)):
             if ((nextCmd, self.currentState) in self.nextDef):
                 self.dispatchResponse(message,nextCmd)
             else:
-                print(self.nameState)
-                print(self.nextDef)
-                print(nextCmd,self.currentState,'ELSE')
+                logger.info("command is not accepted")
+                # print(self.nameState)
+                # print(self.nextDef)
+                # print(nextCmd,self.currentState,'ELSE')
         else:
             repText='input salah \n ketik /reset untuk ke awal'
             # bot.sendMessage(chat_id=update.message.chat_id,text=repText)
@@ -97,6 +102,7 @@ class Router(object):
             # word = Router.contact
         elif isinstance(self.currentState, ShareLocationState):
             nextCmd= self.currentState.name
+            print('GET SHARECONTACTSTATE')
             # word = Router.location
         elif isinstance(self.currentState, MessageState):
             nextCmd= self.currentState.name

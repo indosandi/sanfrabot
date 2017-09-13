@@ -13,3 +13,4 @@ class LocationResponse(Response):
             title=venue.title
             bot.send_venue(message.chat.id,location.latitude,location.longitude,title,address)
 
+
