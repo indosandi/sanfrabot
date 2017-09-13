@@ -3,7 +3,7 @@ import logging
 from telegram import (KeyboardButton)
 # from telegram.ext import (CommandHandler, Filters, RegexHandler, ConversationHandler, MessageHandler)
 
-from telebot.types import (ReplyKeyboardMarkup, KeyboardButton)
+from telebot.types import (ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardRemove)
 from dbfunc.dbhash import Dbhash
 from handlers.confLocHandler import ConfLocDataHandler
 from handlers.confLocKeHandler import ConfLocKeDataHandler
@@ -17,6 +17,7 @@ from responses.initStateHandler import InitStateHandler
 from responses.multiResponse import MultiResponse
 from responses.phoneNoResponse import PhoneNoResponse
 from responses.textResponse import TextResponse
+from responses.locationResponse import LocationResponse
 from route.router import Router
 from states.messageState import MessageState
 from states.optionButtonState import OptionButtonState
@@ -74,29 +75,34 @@ class StatusState(object):
         markup=ReplyKeyboardMarkup(row_width=1)
         item=KeyboardButton('Kirim no',request_contact=True)
         markup.add(item)
-        # reply_keyboard = [[KeyboardButton('Kirim no', request_contact=True)]]
         self.respModNo.addReplyKeyboard(markup)
         self.respModNo.addText('Masukan no hp \n No tidak akan dibagikan tanpa izin')
         #
-        # self.respModLocation = ButtonResponse()
-        # reply_keyboard = [[KeyboardButton('Kirim lokasi', request_location=True)]]
-        # self.respModLocation.addText("klik tombol \n ketik /lokasi untuk bantuan")
-        # self.respModLocation.addReplyKeyboard(reply_keyboard)
+        self.respModLocation = ButtonResponse()
+        markup=ReplyKeyboardMarkup(row_width=1)
+        item=KeyboardButton('Kirim lokasi',request_location=True)
+        markup.add(item)
+        self.respModLocation.addText("klik tombol \n ketik /lokasi untuk bantuan")
+        self.respModLocation.addReplyKeyboard(markup)
         #
-        # keyKirim={}
-        # keyKirim['yes']='kirim'
+        keyKirim={}
+        keyKirim['yes']='kirim'
         #
-        # self.repsModKe = TextResponse()
-        # self.repsModKe.addText('Ketik alamat tujuan\n Ketik /lokasi untuk bantuan')
+        self.repsModKe = TextResponse()
+        self.repsModKe.addText('Ketik alamat tujuan\n Ketik /lokasi untuk bantuan')
+        markup=ReplyKeyboardRemove()
+        markup.selective=False
         # self.repsModKe.addRemoveKeyboard()
         # # reply_keyboard=[[keyKirim['yes']]]
-        # # self.repsModKe.addReplyKeyboard(reply_keyboard)
+        self.repsModKe.addReplyKeyboard(markup)
         #
-        # self.respHarga=TextResponse()
-        # self.respHarga.addText('Ketik harga yang diinginkan \n Kosongkan jika tidak tau harga')
+        self.respHarga=TextResponse()
+        self.respHarga.addText('Ketik harga yang diinginkan \n Kosongkan jika tidak tau harga')
+        markup=ReplyKeyboardRemove()
+        markup.selective=False
         # self.respHarga.addRemoveKeyboard()
         # # reply_keyboard=[[keyKirim['yes']]]
-        # # self.respHarga.addReplyKeyboard(reply_keyboard)
+        self.respHarga.addReplyKeyboard(markup)
         #
         # self.respOjk=ButtonResponse()
         # self.respOjk.addText('Pilih tipe ojek')
@@ -107,9 +113,12 @@ class StatusState(object):
         # self.respOjk.addReplyKeyboard(reply_keyboard)
         #
         #
-        # replyBool = {}
-        # replyBool['y'] = 'yes'
-        # replyBool['n'] = 'no'
+        replyBool = {}
+        replyBool['y'] = 'yes'
+        replyBool['n'] = 'no'
+        markup=ReplyKeyboardMarkup(row_width=2)
+        markup.add(replyBool['y'],replyBool['n'])
+        reply_keyboard=markup
         # reply_keyboard = [[replyBool['y'], replyBool['n']]]
         #
         # self.confNo = MultiResponse()
@@ -120,16 +129,16 @@ class StatusState(object):
         # confNoTemp.addReplyKeyboard(reply_keyboard)
         # self.confNo.addResponse(confNoTemp)
         #
-        # self.confLoc = MultiResponse()
-        # # confLocTemp=LocationResponse()
-        # # self.confLoc.addResponse(confLocTemp)
-        # confLocTemp=TextResponse()
-        # confLocTemp.addText('Lokasi kamu')
-        # self.confLoc.addResponse(confLocTemp)
-        # confLocTemp=ButtonResponse()
-        # confLocTemp.addText("Apakah lokasi di atas benar")
-        # confLocTemp.addReplyKeyboard(reply_keyboard)
-        # self.confLoc.addResponse(confLocTemp)
+        self.confLoc = MultiResponse()
+        confLocTemp=LocationResponse()
+        self.confLoc.addResponse(confLocTemp)
+        confLocTemp=TextResponse()
+        confLocTemp.addText('Lokasi kamu')
+        self.confLoc.addResponse(confLocTemp)
+        confLocTemp=ButtonResponse()
+        confLocTemp.addText("Apakah lokasi di atas benar")
+        confLocTemp.addReplyKeyboard(reply_keyboard)
+        self.confLoc.addResponse(confLocTemp)
         #
         #
         # self.repsModKeConf = MultiResponse()
@@ -158,24 +167,25 @@ class StatusState(object):
         self.respModNoSt = ShareContactState()
         self.respModNoSt.setResponse(self.respModNo)
         self.respModNoSt.name='phone-state'
-        # handler = PhoneDataHandler()
-        # handler.setDbCon(db)
-        # self.respModNoSt.setPreDataHandler(handler)
+        handler = PhoneDataHandler()
+        handler.setDbCon(db)
+        self.respModNoSt.setPreDataHandler(handler)
         #
-        # self.respModLocationSt = ShareLocationState()
-        # self.respModLocationSt.setResponse(self.respModLocation)
+        self.respModLocationSt = ShareLocationState()
+        self.respModLocationSt.setResponse(self.respModLocation)
+        self.respModLocationSt.name='dari-state'
         # handler = DariDataHandler()
         # handler.setDbCon(db)
         # self.respModLocationSt.setPreDataHandler(handler)
         #
-        # self.repsModKeSt = ShareLocationState()
-        # self.repsModKeSt.setResponse(self.repsModKe)
+        self.repsModKeSt = ShareLocationState()
+        self.repsModKeSt.setResponse(self.repsModKe)
         # handler = KeDataHandler()
         # handler.setDbCon(db)
         # self.repsModKeSt.setPreDataHandler(handler)
         #
-        # self.respHargaSt= MessageState()
-        # self.respHargaSt.setResponse(self.respHarga)
+        self.respHargaSt= MessageState()
+        self.respHargaSt.setResponse(self.respHarga)
         # handler= HargaDataHandler()
         # handler.setDbCon(db)
         # self.respHargaSt.setPreDataHandler(handler)
@@ -190,8 +200,8 @@ class StatusState(object):
         # self.confNoSt.setResponse(self.confNo)
         #
         #
-        # self.confLocSt = OptionButtonState()
-        # self.confLocSt.setResponse(self.confLoc)
+        self.confLocSt = OptionButtonState()
+        self.confLocSt.setResponse(self.confLoc)
         # handler=ConfLocDataHandler()
         # handler.setDbCon(db)
         # self.confLocSt.setPreDataHandler(handler)
@@ -210,12 +220,12 @@ class StatusState(object):
         self.router.addRoute(init['mod'], self.initState, self.modifState)
         # self.router.addRoute(cariJek['selesai'], self.respFJState, self.initState)
         self.router.addRoute(mod['no'], self.modifState, self.respModNoSt)
-        # self.router.addRoute(mod['dari'], self.modifState, self.respModLocationSt)
-        # self.router.addRoute(mod['ke'], self.modifState, self.repsModKeSt)
-        # self.router.addRoute(mod['harga'], self.modifState, self.respHargaSt)
+        self.router.addRoute(mod['dari'], self.modifState, self.respModLocationSt)
+        self.router.addRoute(mod['ke'], self.modifState, self.repsModKeSt)
+        self.router.addRoute(mod['harga'], self.modifState, self.respHargaSt)
         # self.router.addRoute(mod['ojek'], self.modifState, self.respOjkSt)
         # self.router.addRoute(Router.location, self.repsModKeSt, self.repsModKeConfSt)
-        # self.router.addRoute(Router.location, self.respModLocationSt, self.confLocSt)
+        self.router.addRoute(self.respModLocationSt.name, self.respModLocationSt, self.confLocSt)
         self.router.addRoute(self.respModNoSt.name, self.respModNoSt, self.initState)
         # self.router.addRoute(Router.contact, self.respModNoSt, self.initState)
         # # self.router.addRoute(Router.contact, self.respModNoSt, self.confNoSt)
