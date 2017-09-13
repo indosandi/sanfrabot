@@ -1,4 +1,4 @@
-from handler.dataHandler import DataHandler
+from handlers.dataHandler import DataHandler
 class RouteHandler(DataHandler):
 
     KEY='state'
