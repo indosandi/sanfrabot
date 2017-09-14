@@ -6,12 +6,15 @@ class InitStateHandler(DataHandler):
 
     def handleData(self, bot, message, response):
         userKey=message.chat.id
+        print(userKey)
         userData=None
         if self.dbconnector.keyExist(userKey):
             userData=self.dbconnector.read(userKey)
             # self.removeEmpty(userData)
         else:
             userData=UserData()
+            print('here')
+            self.dbconnector.save(userKey,userData)
             # self.removeEmpty(userData)
         # print(userData.toString())
         response.addText(userData.toString())

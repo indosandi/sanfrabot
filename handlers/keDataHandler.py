@@ -11,8 +11,10 @@ class KeDataHandler(LocationDataHandler):
         userdata = None
         if self.dbconnector.keyExist(userKey):
             userdata = self.dbconnector.read(userKey)
-            userdata.ke= venue
+            userdata.setKe(venue)
+            # userdata.ke= venue
         else:
             userdata = UserData()
-            userdata.ke= venue
+            userdata.setKe(venue)
+            # userdata.ke= venue
         self.dbconnector.save(userKey, userdata)

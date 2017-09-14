@@ -11,10 +11,13 @@ class DariDataHandler(LocationDataHandler):
         userdata=None
         if self.dbconnector.keyExist(userKey):
             userdata=self.dbconnector.read(userKey)
-            userdata.dari=venue
+            userdata.setDari(venue)
+            # userdata.dari=venue
         else:
             userdata=UserData()
-            userdata.dari=venue
+            print(type(venue))
+            userdata.setDari(venue)
+            # userdata.dari=venue
         self.dbconnector.save(userKey,userdata)
 
     # def tunggu(self):

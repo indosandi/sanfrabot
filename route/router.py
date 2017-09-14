@@ -1,5 +1,5 @@
 import uuid
-from telegram.ext.dispatcher import run_async
+# from telegram.ext.dispatcher import run_async
 from states.messageState import MessageState
 from states.shareContactState import ShareContactState
 from states.shareLocationState import ShareLocationState

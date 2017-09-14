@@ -1,10 +1,11 @@
 import logging
 
 from handlers.dataHandler import DataHandler
-
+from telebot.types import Location
+from telebot.types import Venue
 logger = logging.getLogger()
-from telegram import Venue
-from telegram import Location
+# from telegram import Venue
+# from telegram import Location
 import support.geocode as gserv
 
 class LocationDataHandler(DataHandler):
