@@ -52,10 +52,11 @@ class Router(object):
         self.initState.handler(self.bot,message)
         self.currentState=self.initState
         self.handler.setState(message.chat.id,self.initState.name)
+        # print(self.handler.getState(message.chat.id))
 
     def route(self,message):
         strCurrentState=self.handler.getState(message.chat.id)
-        print(strCurrentState,'strCurrentState')
+        print(strCurrentState,'strCurrentState',message.chat.id)
         # word = self.getWordMessage(message)
         if strCurrentState in self.nameState:
             self.currentState=self.nameState[strCurrentState]
@@ -64,7 +65,8 @@ class Router(object):
         else:
             logger.error('NO STATE IS POSSIBLE')
         nextCmd = self.getWordMessage(message)
-        print(nextCmd)
+        # print(nextCmd)
+        # print(self.nextDef)
         if (self.currentState.decideNext(message, self.inputDef)):
             if ((nextCmd, self.currentState) in self.nextDef):
                 self.dispatchResponse(message,nextCmd)
@@ -75,7 +77,7 @@ class Router(object):
                 # print(nextCmd,self.currentState,'ELSE')
         else:
             repText='input salah \n ketik /reset untuk ke awal'
-            # bot.sendMessage(chat_id=update.message.chat_id,text=repText)
+            self.bot.send_message(chat_id=message.chat.id,text=repText)
             print('here here')
 
     # @run_async
@@ -86,23 +88,23 @@ class Router(object):
         #     print(fromUser,'fromUser')
         #     if chatText is not None:
         #         print(chatText,'chatText')
-        print(message.chat.id,'DISPATCH RESPONSE')
-        # time.sleep(5)
+        # print(message.chat.id,'DISPATCH RESPONSE')
         self.currentState.handlerPrecondition(self.bot,message)
         state = self.nextDef[(word, self.currentState)]
         state.handlerPostcondition(self.bot,message)
         state.handler(self.bot, message)
         self.currentState = state
         self.handler.setState(message.chat.id,self.currentState.name)
+        # print(self.handler.getState(message.chat.id),'dispatchResponse',message.chat.id)
 
     def getWordMessage(self, message):
         if isinstance(self.currentState, ShareContactState):
             nextCmd=self.currentState.name
-            print('GET SHARECONTACTSTATE')
+            # print('GET SHARECONTACTSTATE')
             # word = Router.contact
         elif isinstance(self.currentState, ShareLocationState):
             nextCmd= self.currentState.name
-            print('GET SHARECONTACTSTATE')
+            # print('GET SHARECONTACTSTATE')
             # word = Router.location
         elif isinstance(self.currentState, MessageState):
             nextCmd= self.currentState.name

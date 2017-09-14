@@ -10,6 +10,8 @@ class RouteHandler(DataHandler):
         else:
             return None
 
+
     def setState(self,chatId,stateName):
+        # print('setState')
         userKey=str(chatId)+RouteHandler.KEY
         self.dbconnector.save(userKey,stateName)

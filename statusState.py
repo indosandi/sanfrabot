@@ -47,11 +47,11 @@ class StatusState(object):
         self.respInit.addReplyKeyboard(markup)
 
         mod = {}
-        mod['no'] = 'No'
+        mod['no'] = 'No hp'
         mod['dari'] = 'Dari'
         mod['ke'] = 'Ke'
         mod['harga'] = 'Harga'
-        mod['ojek'] = 'Ojek'
+        mod['ojek'] = 'Tipe'
         self.respMod = ButtonResponse()
         markup=ReplyKeyboardMarkup(row_width=2)
         itembtn1=KeyboardButton(mod['no'])
@@ -94,21 +94,27 @@ class StatusState(object):
         markup.selective=False
         # self.repsModKe.addRemoveKeyboard()
         # # reply_keyboard=[[keyKirim['yes']]]
-        self.repsModKe.addReplyKeyboard(markup)
+        self.repsModKe.addReplyMarkup(markup)
         #
         self.respHarga=TextResponse()
-        self.respHarga.addText('Ketik harga yang diinginkan \n Kosongkan jika tidak tau harga')
-        markup=ReplyKeyboardRemove()
-        markup.selective=False
+        self.respHarga.addText('Ketik harga yang diinginkan \n Keting 0 jika tidak tau harga')
+        markup=ReplyKeyboardRemove(selective=False)
+        # markup.selective=False
         # self.respHarga.addRemoveKeyboard()
         # # reply_keyboard=[[keyKirim['yes']]]
-        self.respHarga.addReplyKeyboard(markup)
+        self.respHarga.addReplyMarkup(markup)
         #
-        # self.respOjk=ButtonResponse()
-        # self.respOjk.addText('Pilih tipe ojek')
-        # tipe={}
-        # tipe['motor']='Motor'
-        # tipe['mobil']='Mobil'
+        self.respOjk=ButtonResponse()
+        self.respOjk.addText('Pilih tipe ojek')
+        markup=ReplyKeyboardMarkup(row_width=1)
+        tipe={}
+        tipe['motor']='motor'
+        tipe['mobil']='mobil'
+        item1=KeyboardButton('motor')
+        item2=KeyboardButton('mobil')
+        markup.add(item1,item2)
+        self.respOjk.addReplyKeyboard(markup)
+
         # reply_keyboard=[[tipe['motor'],tipe['mobil']]]
         # self.respOjk.addReplyKeyboard(reply_keyboard)
         #
@@ -141,14 +147,16 @@ class StatusState(object):
         self.confLoc.addResponse(confLocTemp)
         #
         #
-        # self.repsModKeConf = MultiResponse()
-        # confLocKeTemp = TextResponse()
-        # confLocKeTemp.addText('Lokasi tujuan')
-        # self.repsModKeConf.addResponse(confLocKeTemp)
-        # confLocKeTemp = ButtonResponse()
-        # confLocKeTemp.addText("Apakah lokasi di atas benar")
-        # confLocKeTemp.addReplyKeyboard(reply_keyboard)
-        # self.repsModKeConf.addResponse(confLocKeTemp)
+        self.repsModKeConf = MultiResponse()
+        confLocKeTemp=LocationResponse()
+        self.repsModKeConf.addResponse(confLocKeTemp)
+        confLocKeTemp = TextResponse()
+        confLocKeTemp.addText('Lokasi tujuan')
+        self.repsModKeConf.addResponse(confLocKeTemp)
+        confLocKeTemp = ButtonResponse()
+        confLocKeTemp.addText("Apakah lokasi di atas benar")
+        confLocKeTemp.addReplyKeyboard(reply_keyboard)
+        self.repsModKeConf.addResponse(confLocKeTemp)
         #
         self.initState = OptionButtonState()
         self.initState.setResponse(self.respInit)
@@ -174,27 +182,30 @@ class StatusState(object):
         self.respModLocationSt = ShareLocationState()
         self.respModLocationSt.setResponse(self.respModLocation)
         self.respModLocationSt.name='dari-state'
-        # handler = DariDataHandler()
-        # handler.setDbCon(db)
-        # self.respModLocationSt.setPreDataHandler(handler)
+        handler = DariDataHandler()
+        handler.setDbCon(db)
+        self.respModLocationSt.setPreDataHandler(handler)
         #
         self.repsModKeSt = ShareLocationState()
         self.repsModKeSt.setResponse(self.repsModKe)
-        # handler = KeDataHandler()
-        # handler.setDbCon(db)
-        # self.repsModKeSt.setPreDataHandler(handler)
+        self.repsModKeSt.name='ke-state'
+        handler = KeDataHandler()
+        handler.setDbCon(db)
+        self.repsModKeSt.setPreDataHandler(handler)
         #
         self.respHargaSt= MessageState()
         self.respHargaSt.setResponse(self.respHarga)
-        # handler= HargaDataHandler()
-        # handler.setDbCon(db)
-        # self.respHargaSt.setPreDataHandler(handler)
+        self.respHargaSt.name='harga-state'
+        handler= HargaDataHandler()
+        handler.setDbCon(db)
+        self.respHargaSt.setPreDataHandler(handler)
         #
-        # self.respOjkSt=OptionButtonState()
-        # self.respOjkSt.setResponse(self.respOjk)
-        # handler=OjekDataHandler()
-        # handler.setDbCon(db)
-        # self.respOjkSt.setPreDataHandler(handler)
+        self.respOjkSt=OptionButtonState()
+        self.respOjkSt.setResponse(self.respOjk)
+        self.respOjkSt.name='ojek-state'
+        handler=OjekDataHandler()
+        handler.setDbCon(db)
+        self.respOjkSt.setPreDataHandler(handler)
         #
         # self.confNoSt = OptionButtonState()
         # self.confNoSt.setResponse(self.confNo)
@@ -202,15 +213,17 @@ class StatusState(object):
         #
         self.confLocSt = OptionButtonState()
         self.confLocSt.setResponse(self.confLoc)
-        # handler=ConfLocDataHandler()
-        # handler.setDbCon(db)
-        # self.confLocSt.setPreDataHandler(handler)
+        self.confLocSt.name='conf-dari-state'
+        handler=ConfLocDataHandler()
+        handler.setDbCon(db)
+        self.confLocSt.setPreDataHandler(handler)
         #
-        # self.repsModKeConfSt = OptionButtonState()
-        # self.repsModKeConfSt.setResponse(self.repsModKeConf)
-        # handler = ConfLocKeDataHandler()
-        # handler.setDbCon(db)
-        # self.repsModKeConfSt.setPreDataHandler(handler)
+        self.repsModKeConfSt = OptionButtonState()
+        self.repsModKeConfSt.setResponse(self.repsModKeConf)
+        self.repsModKeConfSt.name='conf-ke-state'
+        handler = ConfLocKeDataHandler()
+        handler.setDbCon(db)
+        self.repsModKeConfSt.setPreDataHandler(handler)
 
         self.router = Router(self.initState)
         handler = RouteHandler()
@@ -223,21 +236,21 @@ class StatusState(object):
         self.router.addRoute(mod['dari'], self.modifState, self.respModLocationSt)
         self.router.addRoute(mod['ke'], self.modifState, self.repsModKeSt)
         self.router.addRoute(mod['harga'], self.modifState, self.respHargaSt)
-        # self.router.addRoute(mod['ojek'], self.modifState, self.respOjkSt)
-        # self.router.addRoute(Router.location, self.repsModKeSt, self.repsModKeConfSt)
+        self.router.addRoute(mod['ojek'], self.modifState, self.respOjkSt)
+        self.router.addRoute(self.repsModKeSt.name, self.repsModKeSt, self.repsModKeConfSt)
         self.router.addRoute(self.respModLocationSt.name, self.respModLocationSt, self.confLocSt)
         self.router.addRoute(self.respModNoSt.name, self.respModNoSt, self.initState)
         # self.router.addRoute(Router.contact, self.respModNoSt, self.initState)
         # # self.router.addRoute(Router.contact, self.respModNoSt, self.confNoSt)
         # self.router.addRoute(replyBool['n'], self.confNoSt, self.respModNoSt)
         # self.router.addRoute(replyBool['y'], self.confNoSt, self.initState)
-        # self.router.addRoute(replyBool['n'], self.confLocSt, self.respModLocationSt)
-        # self.router.addRoute(replyBool['y'], self.confLocSt, self.initState)
-        # self.router.addRoute(replyBool['n'], self.repsModKeConfSt, self.repsModKeSt)
-        # self.router.addRoute(replyBool['y'], self.repsModKeConfSt, self.initState)
-        # self.router.addRoute(Router.message,self.respHargaSt,self.initState)
-        # self.router.addRoute(tipe['motor'],self.respOjkSt,self.initState)
-        # self.router.addRoute(tipe['mobil'],self.respOjkSt,self.initState)
+        self.router.addRoute(replyBool['n'], self.confLocSt, self.respModLocationSt)
+        self.router.addRoute(replyBool['y'], self.confLocSt, self.initState)
+        self.router.addRoute(replyBool['n'], self.repsModKeConfSt, self.repsModKeSt)
+        self.router.addRoute(replyBool['y'], self.repsModKeConfSt, self.initState)
+        self.router.addRoute(self.respHargaSt.name,self.respHargaSt,self.initState)
+        self.router.addRoute(tipe['motor'],self.respOjkSt,self.initState)
+        self.router.addRoute(tipe['mobil'],self.respOjkSt,self.initState)
 
 
 
