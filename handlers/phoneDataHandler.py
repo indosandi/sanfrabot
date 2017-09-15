@@ -7,7 +7,8 @@ logger = logging.getLogger()
 class PhoneDataHandler(DataHandler):
 
     def handleData(self, bot, message, response):
-        phone_number=message.contact.phone_number
+        phone_number=self.addPlus(message.contact.phone_number)
+        print(type(phone_number),'type phone number')
         userKey=message.chat.id
         userdata=None
         if self.dbconnector.keyExist(userKey):
@@ -23,3 +24,10 @@ class PhoneDataHandler(DataHandler):
             logger.info("phone data is saved to db")
         except Exception as e:
             logger.error("fail save phone data")
+
+    def addPlus(self,phone_number):
+        if phone_number[0]=='+':
+            return phone_number
+        else:
+            return '+'+phone_number
+
