@@ -6,3 +6,6 @@ class ShareContactState(State):
             return True
         else:
             return False
+
+    def nextCmd(self,message):
+        return self.name

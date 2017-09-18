@@ -52,7 +52,7 @@ class LocationDataHandler(DataHandler):
             logger.info('venue is synthesized')
         self.dbhandler(bot,message , outvenue, response)
 
-    def dbhandler(self, bot, update, user_data, venue, response):
+    def dbhandler(self, bot,message , outvenue, response):
         pass
         # userKey=update.message.chat_id
         # userdata=None

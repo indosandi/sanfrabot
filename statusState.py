@@ -1,29 +1,44 @@
 import logging
 
-from telegram import (KeyboardButton)
-# from telegram.ext import (CommandHandler, Filters, RegexHandler, ConversationHandler, MessageHandler)
-
-from telebot.types import (ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardRemove)
-from dbfunc.dbhash import Dbhash
-from handlers.confLocHandler import ConfLocDataHandler
-from handlers.confLocKeHandler import ConfLocKeDataHandler
-from handlers.dariDataHandler import DariDataHandler
-from handlers.hargaDataHandler import HargaDataHandler
-from handlers.keDataHandler import KeDataHandler
-from handlers.ojekDataHandler import OjekDataHandler
-from handlers.phoneDataHandler import PhoneDataHandler
+from dbfunc.dbDriverData import DbDriverData
+from dbfunc.dbUserData import DbUserData
+from dbfunc.dbredis import DbRedis
+from handlers.driver.driverDesc import DriverDesc
+from handlers.driver.driverName import DriverName
+from handlers.driver.driverNoMotor import DriverNoMotor
+from handlers.driver.driverOjek import DriverOjek
+from handlers.driver.initDriverHandler import InitDriverHandler
+from handlers.driver.driverPhone import DriverPhone
+from handlers.passenger.confLocHandler import ConfLocDataHandler
+from handlers.passenger.confLocKeHandler import ConfLocKeDataHandler
+from handlers.passenger.dariDataHandler import DariDataHandler
+from handlers.passenger.hargaDataHandler import HargaDataHandler
+from handlers.passenger.initStateHandler import InitStateHandler
+from handlers.passenger.keDataHandler import KeDataHandler
+from handlers.passenger.ojekDataHandler import OjekDataHandler
+from handlers.passenger.phoneDataHandler import PhoneDataHandler
+from handlers.routeHandler import RouteHandler
 from responses.buttonResponse import ButtonResponse
-from responses.initStateHandler import InitStateHandler
+from responses.locationResponse import LocationResponse
 from responses.multiResponse import MultiResponse
 from responses.phoneNoResponse import PhoneNoResponse
 from responses.textResponse import TextResponse
-from responses.locationResponse import LocationResponse
 from route.router import Router
 from states.messageState import MessageState
 from states.optionButtonState import OptionButtonState
 from states.shareContactState import ShareContactState
 from states.shareLocationState import ShareLocationState
-from handlers.routeHandler import RouteHandler
+from telebot.types import (ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove)
+from dbfunc.dbOrder import DbOrder
+from handlers.driver.outHandler import OutHandler as DOutHandler
+from handlers.passenger.outHandler import OutHandler as POutHandler
+from handlers.driver.readyHandler import ReadyHandler as DReadyHandler
+from handlers.passenger.readyHandler import ReadyHandler as PReadyHandler
+from states.locationMessageState import LocationMessageState
+
+# from telegram import (KeyboardButton)
+# from telegram.ext import (CommandHandler, Filters, RegexHandler, ConversationHandler, MessageHandler)
+
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s -%(funcName)10s()- %(levelname)s - %(message)s')
 
 class StatusState(object):
@@ -32,7 +47,154 @@ class StatusState(object):
         self.genAllResponses()
 
     def genAllResponses(self):
-        db=Dbhash()
+        # db=Dbhash()
+        # db=DbRedis()
+        db=DbUserData()
+        dbDriver=DbDriverData()
+        dbOrder=DbOrder()
+
+        initDrPs = {}
+        initDrPs['driver'] = 'pengemudi'
+        initDrPs['passenger'] = 'penumpang'
+        markup = ReplyKeyboardMarkup(row_width=1)
+        itembtn1 = KeyboardButton(initDrPs['driver'])
+        itembtn2 = KeyboardButton(initDrPs['passenger'])
+        markup.add(itembtn1,itembtn2)
+        self.respInitDrPs = ButtonResponse()
+        self.respInitDrPs.addReplyKeyboard(markup)
+
+        # FOR DRIVER MENU --------------------
+        initDriver = {}
+        initDriver['aktifkan'] = 'Aktifkan'
+        initDriver['mod'] = 'Ubah Info'
+        markup = ReplyKeyboardMarkup(row_width=1)
+        itembtn1 = KeyboardButton(initDriver['aktifkan'])
+        itembtn2 = KeyboardButton(initDriver['mod'])
+        markup.add(itembtn1, itembtn2)
+        respInitDriver = ButtonResponse()
+        respInitDriver.addReplyKeyboard(markup)
+
+        modD = {}
+        modD['no'] = 'No hp'
+        # modD['noMotor'] = 'No plat'
+        modD['nama'] = 'Nama'
+        modD['desc'] = 'Deskripsi'
+        modD['ojek'] = 'Tipe'
+        modDriver= ButtonResponse()
+        markup=ReplyKeyboardMarkup(row_width=2)
+        itembtn1=KeyboardButton(modD['no'])
+        # itembtn2=KeyboardButton(modD['noMotor'])
+        itembtn3=KeyboardButton(modD['nama'])
+        itembtn4=KeyboardButton(modD['desc'])
+        itembtn5=KeyboardButton(modD['ojek'])
+        markup.add(itembtn1,itembtn3,itembtn4,itembtn5)
+        # markup.add(itembtn1,itembtn2,itembtn3,itembtn4,itembtn5)
+        modDriver.addText('Pilih item')
+        modDriver.addReplyKeyboard(markup)
+
+
+        dvKey={}
+        dvKey['checkin']='Mangkal'
+        dvKey['selese']='Tutup'
+        dvResp=ButtonResponse()
+        markup = ReplyKeyboardMarkup(row_width=1)
+        item1 = KeyboardButton(dvKey['checkin'],request_location=True)
+        item2 = KeyboardButton(dvKey['selese'])
+        markup.add(item1,item2)
+        dvResp.addReplyKeyboard(markup)
+
+        noDriver = ButtonResponse()
+        markup=ReplyKeyboardMarkup(row_width=1)
+        item=KeyboardButton('Kirim no',request_contact=True)
+        markup.add(item)
+        noDriver.addReplyKeyboard(markup)
+        noDriver.addText('Masukan no hp \n No hanya akan dibagi ketika order diterima ')
+
+        namaDriver=TextResponse()
+        namaDriver.addText('Masukan nama:')
+        markup=ReplyKeyboardRemove(selective=False)
+        namaDriver.addReplyMarkup(markup)
+
+        # noMotor=TextResponse()
+        # noMotor.addText('Masukan no plat:')
+        # markup=ReplyKeyboardRemove(selective=False)
+        # noMotor.addReplyMarkup(markup)
+
+        descMotor=TextResponse()
+        descMotor.addText('Deskripsikan kendaraan (termasuk no plat):')
+        markup=ReplyKeyboardRemove(selective=False)
+        descMotor.addReplyMarkup(markup)
+
+        ojkDriver=ButtonResponse()
+        ojkDriver.addText('Pilih tipe kendaraan')
+        markup=ReplyKeyboardMarkup(row_width=1)
+        tipeD={}
+        tipeD['motor']='motor'
+        tipeD['mobil']='mobil'
+        item1=KeyboardButton('motor')
+        item2=KeyboardButton('mobil')
+        markup.add(item1,item2)
+        ojkDriver.addReplyKeyboard(markup)
+
+        initDriverSt = OptionButtonState()
+        initDriverSt.setResponse(respInitDriver)
+        initDriverSt.name='init-state-driver'
+        handler = InitDriverHandler()
+        handler.setDbCon(dbDriver)
+        initDriverSt.setPostDataHandler(handler)
+
+        dvReadySt= LocationMessageState()
+        dvReadySt.name='dvready-state-driver'
+        dvReadySt.setResponse(dvResp)
+        handler= DReadyHandler()
+        handler.setDbCon(dbDriver)
+        dvReadySt.setPostDataHandler(handler)
+        print(handler,'POST')
+        handler= DOutHandler()
+        handler.setDbCon(dbDriver)
+        dvReadySt.setPreDataHandler(handler)
+        print(handler,'PRE')
+
+        modDriverSt = OptionButtonState()
+        modDriverSt.setResponse(modDriver)
+        modDriverSt.name='mod-state-driver'
+
+        noDriverSt= ShareContactState()
+        noDriverSt.setResponse(noDriver)
+        noDriverSt.name = 'no-state-driver'
+        handler = DriverPhone()
+        handler.setDbCon(dbDriver)
+        noDriverSt.setPreDataHandler(handler)
+
+        namaDriverSt= MessageState()
+        namaDriverSt.setResponse(namaDriver)
+        namaDriverSt.name='nama-state-driver'
+        handler = DriverName()
+        handler.setDbCon(dbDriver)
+        namaDriverSt.setPreDataHandler(handler)
+
+        # noMotorSt = MessageState()
+        # noMotorSt.setResponse(noMotor)
+        # noMotorSt.name='nomotor-state-driver'
+        # handler = DriverNoMotor()
+        # handler.setDbCon(dbDriver)
+        # noMotorSt.setPreDataHandler(handler)
+
+        descMotorSt=MessageState()
+        descMotorSt.setResponse(descMotor)
+        descMotorSt.name='desc-state-driver'
+        handler = DriverDesc()
+        handler.setDbCon(dbDriver)
+        descMotorSt.setPreDataHandler(handler)
+
+        ojkDriverSt=OptionButtonState()
+        ojkDriverSt.setResponse(ojkDriver)
+        ojkDriverSt.name='ojek-state-driver'
+        handler=DriverOjek()
+        handler.setDbCon(dbDriver)
+        ojkDriverSt.setPreDataHandler(handler)
+
+        # END DRIVER MENU --------------------
 
         init = {}
         init['find'] = 'Cari Ojek'
@@ -45,6 +207,14 @@ class StatusState(object):
         self.respInit = ButtonResponse()
         reply_keyboard = [[init['find']], [init['mod']]]
         self.respInit.addReplyKeyboard(markup)
+
+        opOrd={}
+        opOrd['selese']='Tutup'
+        ordStr=ButtonResponse()
+        markup = ReplyKeyboardMarkup(row_width=1)
+        item = KeyboardButton(opOrd['selese'])
+        markup.add(item)
+        ordStr.addReplyKeyboard(markup)
 
         mod = {}
         mod['no'] = 'No hp'
@@ -97,7 +267,7 @@ class StatusState(object):
         self.repsModKe.addReplyMarkup(markup)
         #
         self.respHarga=TextResponse()
-        self.respHarga.addText('Ketik harga yang diinginkan \n Keting 0 jika tidak tau harga')
+        self.respHarga.addText('Ketik harga yang diinginkan \n Ketik 0 jika tidak tau harga')
         markup=ReplyKeyboardRemove(selective=False)
         # markup.selective=False
         # self.respHarga.addRemoveKeyboard()
@@ -127,13 +297,13 @@ class StatusState(object):
         reply_keyboard=markup
         # reply_keyboard = [[replyBool['y'], replyBool['n']]]
         #
-        # self.confNo = MultiResponse()
-        # confNoTemp=PhoneNoResponse()
-        # self.confNo.addResponse(confNoTemp)
-        # confNoTemp=ButtonResponse()
-        # confNoTemp.addText('Apakah no di atas benar')
-        # confNoTemp.addReplyKeyboard(reply_keyboard)
-        # self.confNo.addResponse(confNoTemp)
+        self.confNo = MultiResponse()
+        confNoTemp=PhoneNoResponse()
+        self.confNo.addResponse(confNoTemp)
+        confNoTemp=ButtonResponse()
+        confNoTemp.addText('Apakah no di atas benar')
+        confNoTemp.addReplyKeyboard(reply_keyboard)
+        self.confNo.addResponse(confNoTemp)
         #
         self.confLoc = MultiResponse()
         confLocTemp=LocationResponse()
@@ -157,18 +327,37 @@ class StatusState(object):
         confLocKeTemp.addText("Apakah lokasi di atas benar")
         confLocKeTemp.addReplyKeyboard(reply_keyboard)
         self.repsModKeConf.addResponse(confLocKeTemp)
-        #
+
+        # STATE----------
+
+
+        initDrPsSt= OptionButtonState()
+        initDrPsSt.setResponse(self.respInitDrPs)
+        initDrPsSt.name= 'init-state-drps'
+
+
         self.initState = OptionButtonState()
         self.initState.setResponse(self.respInit)
         self.initState.name='init-state'
         handler=InitStateHandler()
         handler.setDbCon(db)
         self.initState.setPostDataHandler(handler)
-        #
+
+        # passOrderSt = OptionButtonState()
+        # passOrderSt.setResponse(ordStr)
+        # handler= PReadyHandler()
+        # handler.setDbCon(db)
+        # passOrderSt.setPostDataHandler(handler)
+        # print(handler,'POST')
+        # handler= POutHandler()
+        # handler.setDbCon(db)
+        # passOrderSt.setPreDataHandler(handler)
+        # print(handler,'PRE')
+
         self.modifState = OptionButtonState()
         self.modifState.setResponse(self.respMod)
         self.modifState.name='modif-state'
-        #
+
         # self.respFJState = OptionButtonState()
         # self.respFJState.setResponse(self.respFJ)
         #
@@ -207,8 +396,8 @@ class StatusState(object):
         handler.setDbCon(db)
         self.respOjkSt.setPreDataHandler(handler)
         #
-        # self.confNoSt = OptionButtonState()
-        # self.confNoSt.setResponse(self.confNo)
+        self.confNoSt = OptionButtonState()
+        self.confNoSt.setResponse(self.confNo)
         #
         #
         self.confLocSt = OptionButtonState()
@@ -225,12 +414,33 @@ class StatusState(object):
         handler.setDbCon(db)
         self.repsModKeConfSt.setPreDataHandler(handler)
 
-        self.router = Router(self.initState)
+        self.router = Router(initDrPsSt)
+        # self.router = Router(self.initState)
+        dbredis=DbRedis()
         handler = RouteHandler()
-        handler.setDbCon(db)
+        handler.setDbCon(dbredis)
         self.router.addHandler(handler)
-        # self.router.addRoute(init['find'], self.initState, self.respFJState)
+
+        self.router.addRoute(initDrPs['driver'],initDrPsSt,initDriverSt)
+        self.router.addRoute(initDriver['aktifkan'], initDriverSt, dvReadySt)
+        self.router.addRoute(dvKey['selese'],dvReadySt,initDriverSt)
+        self.router.addRoute(dvReadySt.name,dvReadySt,dvReadySt)
+        self.router.addRoute(initDriver['mod'],initDriverSt,modDriverSt)
+        self.router.addRoute(modD['no'],modDriverSt,noDriverSt)
+        # self.router.addRoute(modD['noMotor'],modDriverSt,noMotorSt)
+        self.router.addRoute(modD['nama'],modDriverSt,namaDriverSt)
+        self.router.addRoute(modD['desc'],modDriverSt,descMotorSt)
+        self.router.addRoute(modD['ojek'],modDriverSt,ojkDriverSt)
+        self.router.addRoute(noDriverSt.name,noDriverSt,initDriverSt)
+        # self.router.addRoute(noMotorSt.name,noMotorSt,initDriverSt)
+        self.router.addRoute(descMotorSt.name,descMotorSt,initDriverSt)
+        self.router.addRoute(namaDriverSt.name,namaDriverSt,initDriverSt)
+        self.router.addRoute(tipeD['motor'],ojkDriverSt,initDriverSt)
+        self.router.addRoute(tipeD['mobil'],ojkDriverSt,initDriverSt)
+
+        self.router.addRoute(initDrPs['passenger'],initDrPsSt,self.initState)
         self.router.addRoute(init['mod'], self.initState, self.modifState)
+        # self.router.addRoute(init['find'], self.initState,passOrderSt)
         # self.router.addRoute(cariJek['selesai'], self.respFJState, self.initState)
         self.router.addRoute(mod['no'], self.modifState, self.respModNoSt)
         self.router.addRoute(mod['dari'], self.modifState, self.respModLocationSt)
@@ -241,7 +451,7 @@ class StatusState(object):
         self.router.addRoute(self.respModLocationSt.name, self.respModLocationSt, self.confLocSt)
         self.router.addRoute(self.respModNoSt.name, self.respModNoSt, self.initState)
         # self.router.addRoute(Router.contact, self.respModNoSt, self.initState)
-        # # self.router.addRoute(Router.contact, self.respModNoSt, self.confNoSt)
+        # self.router.addRoute(self.respModNoSt.name, self.respModNoSt, self.confNoSt)
         # self.router.addRoute(replyBool['n'], self.confNoSt, self.respModNoSt)
         # self.router.addRoute(replyBool['y'], self.confNoSt, self.initState)
         self.router.addRoute(replyBool['n'], self.confLocSt, self.respModLocationSt)
@@ -251,8 +461,7 @@ class StatusState(object):
         self.router.addRoute(self.respHargaSt.name,self.respHargaSt,self.initState)
         self.router.addRoute(tipe['motor'],self.respOjkSt,self.initState)
         self.router.addRoute(tipe['mobil'],self.respOjkSt,self.initState)
-
-
+        # self.router.addRoute(opOrd['selese'],passOrderSt,self.initState)
 
     def cancel(self, bot, update, user_data):
         bot.sendMessage(chat_id=update.message.chat_id,text='Ketik /reset untuk ulang')
