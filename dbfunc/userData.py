@@ -30,30 +30,29 @@ class UserData(JsonDeserializable):
         self.harga=harga
         self.ojek=ojek
         self.emptyAll()
-        print(self.no,'self no')
 
     def emptyResponse(self, key):
         if key==UserData.NO:
             if self.no is None:
-                self.no='kosong'
+                self.no='...'
         if key==UserData.DARI:
             if self.dari is None:
-                location=Location(-6.311525,106.829285)
-                venue=Venue(location,'','kosong',None)
+                location=Location(106.829285,-6.311525)
+                venue=Venue(location,'','no address',None)
                 self.dari=toJson.toJson(venue)
                 # self.dari={'lat':'','long':'','alamat':'kosong'}
         if key==UserData.KE:
             if self.ke is None:
-                location=Location(-6.311525,106.829285)
-                venue=Venue(location,'','kosong',None)
+                location=Location(106.829285,-6.311525)
+                venue=Venue(location,'','no address',None)
                 self.ke=toJson.toJson(venue)
                 # self.ke={'lat':'','long':'','alamat':'kosong'}
         if key== UserData.HARGA:
             if self.harga is None:
-                self.harga='kosong'
+                self.harga='...'
         if key==UserData.OJEK:
             if self.ojek is None:
-                self.ojek='kosong'
+                self.ojek='motor'
 
     def emptyAll(self):
         self.emptyResponse(UserData.NO)
@@ -85,6 +84,7 @@ class UserData(JsonDeserializable):
         strOut = ""
         for s in outStr:
             strOut = strOut + s + '\n'
+        strOut=strOut+'Ketik /reset untuk ke awal'
         return strOut
 
     def toStringHandler(self, key):

@@ -49,7 +49,7 @@ class DriverData(JsonDeserializable):
                 self.desc ='..'
         if key==DriverData.OJEK:
             if self.ojek is None:
-                self.ojek='...'
+                self.ojek='motor'
         if key==DriverData.LOKASI:
             if self.location is None:
                 location=Location(106.829285,-6.311525)

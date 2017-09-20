@@ -8,8 +8,7 @@ class PhoneDataHandler(DataHandler):
 
     def handleData(self, bot, message, response):
         phone_number=self.addPlus(message.contact.phone_number)
-        print(type(phone_number),'type phone number')
-        userKey=message.chat.id
+        userKey=self.getUserKey(message)
         userdata=None
         if self.dbconnector.keyExist(userKey):
             userdata=self.dbconnector.read(userKey)
@@ -30,4 +29,7 @@ class PhoneDataHandler(DataHandler):
             return phone_number
         else:
             return '+'+phone_number
+
+    def getUserKey(self,message):
+        return str(message.chat.id)
 

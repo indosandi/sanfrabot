@@ -25,7 +25,7 @@ class LocationDataHandler(DataHandler):
             #get reverse geo coding from Alamat
             outgps=gserv.getLatLng(alamat)
             if outgps['lat']==gserv.errorLat and outgps['lng']==gserv.errorLng:
-                outalamat='alamat tidak diketahui'
+                outalamat=alamat+' (tidak dikenal)\n(mungkin beda di peta)'
             else:
                 outalamat=alamat
             locationTemp=Location(outgps['lng'],outgps['lat'])

@@ -52,6 +52,7 @@ class Router(object):
         self.initState.handler(self.bot,message)
         self.currentState=self.initState
         self.handler.setState(message.chat.id,self.initState.name)
+        print('reset and start should implement clean GEOPOS driver and Closing order')
         # print(self.handler.getState(message.chat.id))
 
     def route(self,message):
@@ -90,28 +91,32 @@ class Router(object):
         #         print(chatText,'chatText')
         # print(message.chat.id,'DISPATCH RESPONSE')
         self.currentState.handlerPrecondition(self.bot,message)
+        print(self.nextDef[(word, self.currentState)],'CURRENT_STATE 3')
+        print(word,self.currentState,'CURRENT_STATE 3')
         state = self.nextDef[(word, self.currentState)]
         state.handlerPostcondition(self.bot,message)
         state.handler(self.bot, message)
         self.currentState = state
+        print(self.currentState,'CURRENT STATE')
         self.handler.setState(message.chat.id,self.currentState.name)
         # print(self.handler.getState(message.chat.id),'dispatchResponse',message.chat.id)
 
     def getWordMessage(self, message):
-        if isinstance(self.currentState, ShareContactState):
-            nextCmd=self.currentState.name
-            # print('GET SHARECONTACTSTATE')
-            # word = Router.contact
-        elif isinstance(self.currentState, ShareLocationState):
-            nextCmd= self.currentState.name
-            # print('GET SHARECONTACTSTATE')
-            # word = Router.location
-        elif isinstance(self.currentState, MessageState):
-            nextCmd= self.currentState.name
-            # word = Router.message
-        else:
-            nextCmd = message.text
-        return nextCmd
+        return self.currentState.nextCmd(message)
+        # if isinstance(self.currentState, ShareContactState):
+        #     nextCmd=self.currentState.name
+        #     # print('GET SHARECONTACTSTATE')
+        #     # word = Router.contact
+        # elif isinstance(self.currentState, ShareLocationState):
+        #     nextCmd= self.currentState.name
+        #     # print('GET SHARECONTACTSTATE')
+        #     # word = Router.location
+        # elif isinstance(self.currentState, MessageState):
+        #     nextCmd= self.currentState.name
+        #     # word = Router.message
+        # else:
+        #     nextCmd = message.text
+        # return nextCmd
 
     def routeLocation(self,bot,update):
         print('location here')

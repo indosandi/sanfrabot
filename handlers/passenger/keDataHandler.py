@@ -1,13 +1,13 @@
 import logging
 
-from locationDataHandler import LocationDataHandler
+from handlers.locationDataHandler import LocationDataHandler
 from dbfunc.userData import UserData
 
 logger = logging.getLogger()
 
 class KeDataHandler(LocationDataHandler):
     def dbhandler(self, bot, message, venue, response):
-        userKey = str(message.chat.id) + 'locationTemp'
+        userKey = self.getUserKey(message)
         userdata = None
         if self.dbconnector.keyExist(userKey):
             userdata = self.dbconnector.read(userKey)
@@ -17,4 +17,12 @@ class KeDataHandler(LocationDataHandler):
             userdata = UserData()
             userdata.setKe(venue)
             # userdata.ke= venue
-        self.dbconnector.save(userKey, userdata)
+        try:
+            self.dbconnector.save(userKey, userdata)
+            logger.info("ke data is saved to db")
+        except Exception as e:
+            logger.error("fail ke data ")
+            print(str(e))
+
+    def getUserKey(self,message):
+        return str(message.chat.id) + 'locationTemp'

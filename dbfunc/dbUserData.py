@@ -12,6 +12,7 @@ class DbUserData(DbRedis):
     STATUS_OPEN='open'
     STATUS_CLOSED='closed'
     STATUS_FILLED='filled'
+
     def save(self,key,userdata):
         dic=userdata.toJsonUserData()
         super(DbUserData,self).save(key,json.dumps(dic))
@@ -20,7 +21,15 @@ class DbUserData(DbRedis):
         obj=super(DbUserData,self).read(key)
         return UserData.de_json(obj)
 
-    def setReady(self,key):
+    def readOrder(self,key):
+        obj=super(DbUserData,self).read(key)
+        return OrderData.de_json(obj)
+
+    def saveOrder(self,key,orderdata):
+        dic=orderdata.toJsonUserData()
+        super(DbUserData,self).save(key,json.dumps(dic))
+
+    def setReadyOrder(self,key):
 
         # create new order
 
@@ -43,6 +52,7 @@ class DbUserData(DbRedis):
         #orderData.setDari(dari)
         #orderData.setKe(ke)
         orderData.status=DbUserData.STATUS_OPEN
+        orderData.id=key
 
         keyOrder=key+'Order'+str(timestamp)
         keyUserOrder=key+'Order'
@@ -50,30 +60,56 @@ class DbUserData(DbRedis):
         #execute
         try:
             self.save(keyOrder,orderData)
-            self.save(keyUserOrder,keyOrder)
+            query="SET"+' '+keyUserOrder+' '+keyOrder
+            self.dbcon.execute_command(query)
             logger.info("order data is saved to db")
         except Exception as e:
             logger.error("fail order data ")
             logger.error(str(e))
+        return self.getRadius(orderData),orderData
 
     def remove(self,key):
         # read driver data
+        orderData=None
+        orderValue=None
         try:
-            orderValue=self.read(key+'Order')
-            orderData= self.read(orderValue)
+            query='GET '+key+'Order'
+            orderValue=self.dbcon.execute_command(query)
+            # orderValue=self.read(key+'Order')
+            print(orderValue)
+            orderData= self.readOrder(orderValue)
         except Exception as e:
             logger.error("fail reloading user order data ")
             logger.error(str(e))
 
         orderData.status = DbUserData.STATUS_CLOSED
         orderData.timefilled=int(time.time()*1000)
+        print(orderData.timefilled)
+        print(orderData.status)
 
         #execute
         try:
-            self.save(key,orderData)
+            self.save(orderValue,orderData)
             logger.info("order data is saved to db")
         except Exception as e:
             logger.error("fail order data ")
             logger.error(str(e))
 
+
+    def getRadius(self,order):
+        tipe=order.tipe
+        lat=order.dari['location']['latitude']
+        lng=order.dari['location']['longitude']
+        query='GEORADIUS '+str(tipe)+' '+str(lng)+' '+str(lat)+' '+'2 km WITHDIST ASC'
+        print(query)
+        out=None
+        try:
+            out=self.dbcon.execute_command(query)
+        except Exception as e:
+            logger.error("fail get radius")
+            logger.error(str(e))
+        if out is None:
+            return []
+        else:
+            return out
 

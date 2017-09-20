@@ -9,7 +9,7 @@ class DataHandler(object):
     def setDbCon(self,dbcon):
         self.dbconnector=dbcon
 
-    def handleData(self, bot, update, user_data, response):
+    def handleData(self, bot,message , response):
         pass
 
     # def writeData(self,key,data):

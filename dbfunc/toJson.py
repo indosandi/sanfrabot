@@ -18,7 +18,7 @@ def toJsonLocation(data):
     dic={}
     if data is not None:
         dic['latitude']=ifNone(data.latitude)
-        dic['longitude']=ifNone(data.latitude)
+        dic['longitude']=ifNone(data.longitude)
     else:
         dic['latitude']=None
         dic['longitude']=None
