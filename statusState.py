@@ -38,6 +38,7 @@ from states.locationMessageState import LocationMessageState
 from route.inlineRoute import InlineRoute
 import support.emojis as emo
 from handlers.driver.negoHandler import NegoHandler
+from handlers.resetHandler import ResetHandler
 
 # from telegram import (KeyboardButton)
 # from telegram.ext import (CommandHandler, Filters, RegexHandler, ConversationHandler, MessageHandler)
@@ -120,11 +121,6 @@ class StatusState(object):
         markup=ReplyKeyboardRemove(selective=False)
         namaDriver.addReplyMarkup(markup)
 
-        # noMotor=TextResponse()
-        # noMotor.addText('Masukan no plat:')
-        # markup=ReplyKeyboardRemove(selective=False)
-        # noMotor.addReplyMarkup(markup)
-
         descMotor=TextResponse()
         descMotor.addText('Deskripsikan kendaraan (termasuk no polisi):')
         markup=ReplyKeyboardRemove(selective=False)
@@ -137,17 +133,26 @@ class StatusState(object):
         tipeD['motor']='motor'
         tipeD['mobil']='mobil'
         tipeD['bentor']='bentor'
-        tipeD['andong']='andong'
+        tipeD['delman']='delman'
         # tipeD['becak']='becak'
         tipeD['kapal']='kapal'
         item1=KeyboardButton('motor')
         item2=KeyboardButton('mobil')
         item3=KeyboardButton('bentor')
-        item4=KeyboardButton('andong')
+        item4=KeyboardButton('delman')
         # item5=KeyboardButton('becak')
         item6=KeyboardButton('kapal')
         markup.add(item1,item2,item3,item4,item6)
         ojkDriver.addReplyKeyboard(markup)
+
+        kembaliDriver = ButtonResponse()
+        kembaliDriver.addText('Selamat anda mendapatkan order'+'\xF0\x9F\x8E\x89'+'\xF0\x9F\x8E\x89'+', kembali untuk ke menu awal')
+        markup=ReplyKeyboardMarkup(row_width=1)
+        typeKembali={}
+        typeKembali['kembali']='Kembali'
+        item1=KeyboardButton(typeKembali['kembali'])
+        markup.add(item1)
+        kembaliDriver.addReplyKeyboard(markup)
 
         initDriverSt = OptionButtonState()
         initDriverSt.setResponse(respInitDriver)
@@ -186,13 +191,6 @@ class StatusState(object):
         handler.setDbCon(dbDriver)
         namaDriverSt.setPreDataHandler(handler)
 
-        # noMotorSt = MessageState()
-        # noMotorSt.setResponse(noMotor)
-        # noMotorSt.name='nomotor-state-driver'
-        # handler = DriverNoMotor()
-        # handler.setDbCon(dbDriver)
-        # noMotorSt.setPreDataHandler(handler)
-
         descMotorSt=MessageState()
         descMotorSt.setResponse(descMotor)
         descMotorSt.name='desc-state-driver'
@@ -207,6 +205,9 @@ class StatusState(object):
         handler.setDbCon(dbDriver)
         ojkDriverSt.setPreDataHandler(handler)
 
+        kembaliDriverSt = OptionButtonState()
+        kembaliDriverSt.setResponse(kembaliDriver)
+        kembaliDriverSt.name='kembali-state-driver'
         # END DRIVER MENU --------------------
 
         init = {}
@@ -234,7 +235,7 @@ class StatusState(object):
         mod['dari'] = 'Dari'
         mod['ke'] = 'Ke'
         mod['harga'] = 'Harga'
-        mod['ojek'] = 'Tipe'
+        mod['ojek'] = 'Kendaraan'
         self.respMod = ButtonResponse()
         markup=ReplyKeyboardMarkup(row_width=2)
         itembtn1=KeyboardButton(mod['no'])
@@ -293,8 +294,14 @@ class StatusState(object):
         tipe={}
         tipe['motor']='motor'
         tipe['mobil']='mobil'
+        tipe['bentor']='bentor'
+        tipe['delman']='delman'
+        tipe['kapal']='kapal'
         item1=KeyboardButton('motor')
         item2=KeyboardButton('mobil')
+        item3=KeyboardButton('bentor')
+        item4=KeyboardButton('delman')
+        item5=KeyboardButton('kapal')
         markup.add(item1,item2)
         self.respOjk.addReplyKeyboard(markup)
 
@@ -341,13 +348,20 @@ class StatusState(object):
         confLocKeTemp.addReplyKeyboard(reply_keyboard)
         self.repsModKeConf.addResponse(confLocKeTemp)
 
-        # STATE----------
+        kembaliUser = ButtonResponse()
+        kembaliUser.addText('Selamat anda mendapatkan pengemudi'+'\xF0\x9F\x8E\x89'+'\xF0\x9F\x8E\x89'+', kembali untuk ke menu awal')
+        typeKembaliUser = {}
+        typeKembaliUser['kembali'] = 'Kembali'
+        item1 = KeyboardButton(typeKembaliUser['kembali'])
+        markup=ReplyKeyboardMarkup(row_width=1)
+        markup.add(item1)
+        kembaliUser.addReplyKeyboard(markup)
 
+        # STATE----------
 
         initDrPsSt= OptionButtonState()
         initDrPsSt.setResponse(self.respInitDrPs)
         initDrPsSt.name= 'init-state-drps'
-
 
         self.initState = OptionButtonState()
         self.initState.setResponse(self.respInit)
@@ -427,6 +441,10 @@ class StatusState(object):
         handler.setDbCon(db)
         self.repsModKeConfSt.setPreDataHandler(handler)
 
+        kembaliUserSt = OptionButtonState()
+        kembaliUserSt.setResponse(kembaliUser)
+        kembaliUserSt.name='kembali-user-state'
+
         self.router = Router(initDrPsSt)
         # self.router = Router(self.initState)
         dbredis=DbRedis()
@@ -438,14 +456,18 @@ class StatusState(object):
         # self.inlineRoute.addBot(self.router.bot)
         self.inlineRoute.addDriverDB(dbDriver)
         self.inlineRoute.addUserDB(db)
-        self.inlineRoute.setFinalState('driver',initDriverSt)
-        self.inlineRoute.setFinalState('user',self.initState)
+        self.inlineRoute.setFinalState('driver',kembaliDriverSt)
+        self.inlineRoute.setFinalState('user',kembaliUserSt)
         self.inlineRoute.setRouteHandler(handler)
         # self.inlineRoute.setupRoute()
 
         handler = NegoHandler()
         handler.setDbCon(dbDriver)
         self.router.addSpecHandler(dvReadySt,handler)
+        handler = ResetHandler()
+        handler.setDbUser(db)
+        handler.setDbCon(dbDriver)
+        self.router.setResetHandler(handler)
 
         self.router.addRoute(initDrPs['driver'],initDrPsSt,initDriverSt)
         self.router.addRoute(initDriver['aktifkan'], initDriverSt, dvReadySt)
@@ -463,9 +485,10 @@ class StatusState(object):
         self.router.addRoute(namaDriverSt.name,namaDriverSt,initDriverSt)
         self.router.addRoute(tipeD['motor'],ojkDriverSt,initDriverSt)
         self.router.addRoute(tipeD['mobil'],ojkDriverSt,initDriverSt)
-        self.router.addRoute(tipeD['andong'],ojkDriverSt,initDriverSt)
+        self.router.addRoute(tipeD['delman'],ojkDriverSt,initDriverSt)
         self.router.addRoute(tipeD['kapal'],ojkDriverSt,initDriverSt)
         self.router.addRoute(tipeD['bentor'],ojkDriverSt,initDriverSt)
+        self.router.addRoute(typeKembali['kembali'],kembaliDriverSt,initDriverSt)
 
         self.router.addRoute(initDrPs['passenger'],initDrPsSt,self.initState)
         self.router.addRoute(init['find'],self.initState,passOrderSt)
@@ -492,6 +515,10 @@ class StatusState(object):
         self.router.addRoute(self.respHargaSt.name,self.respHargaSt,self.initState)
         self.router.addRoute(tipe['motor'],self.respOjkSt,self.initState)
         self.router.addRoute(tipe['mobil'],self.respOjkSt,self.initState)
+        self.router.addRoute(tipe['bentor'],self.respOjkSt,self.initState)
+        self.router.addRoute(tipe['delman'],self.respOjkSt,self.initState)
+        self.router.addRoute(tipe['kapal'],self.respOjkSt,self.initState)
+        self.router.addRoute(typeKembaliUser['kembali'],kembaliUserSt,self.initState)
         # self.router.addRoute(opOrd['selese'],passOrderSt,self.initState)
 
     def cancel(self, bot, update, user_data):
@@ -506,17 +533,6 @@ class StatusState(object):
         bot.sendMessage(chat_id=update.message.chat_id,text=repText)
         return 0
 
-    # def getConvHandler(self):
-    #     conv_handler = ConversationHandler(
-    #         entry_points=[RegexHandler('.', self.initState.handler, pass_user_data=True)],
-    #         states={
-    #             self.router.id: [CommandHandler('reset', self.reset,pass_user_data=True),
-    #                              MessageHandler(Filters.location, self.router.route, pass_user_data=True),
-    #                              MessageHandler(Filters.contact, self.router.route, pass_user_data=True),
-    #                              RegexHandler('.', self.router.route, pass_user_data=True)
-    #                              ]},
-    #         fallbacks=[CommandHandler('cancel', self.cancel,pass_user_data=True)])
-    #     return conv_handler
 
     def test(self, bot, update):
         print('self test')

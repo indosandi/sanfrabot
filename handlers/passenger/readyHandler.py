@@ -22,13 +22,15 @@ class ReadyHandler(DataHandler):
         # if len(listDr)>0:
         else:
             drivers=listDr[0][::2]
-            dist=listDr[0][1::2]
+            dists=listDr[0][1::2]
             jmlahDriver=str(len(listDr))
             chatId=self.getUserKey(message)
             bot.send_message(chatId, 'Order akan dikirim ke '+jmlahDriver+' drivers. '
                                                                           'Mereka bisa setuju atau menawar harga')
-            for driver,dist in zip(drivers,dist):
+            for driver,dist in listDr:
+            # for driver,dist in zip(drivers,dists):
                 chatId=driver.split('Driver')[0]
+                print(driver,dist,'DRIVE MULTI')
                 self.composeResponse(bot,order,dist,chatId)
 
     def composeResponse(self,bot,order,dist,chatId):
@@ -67,23 +69,3 @@ class ReadyHandler(DataHandler):
 
         bot.send_message(chatId,'Disini harga ditentukan oleh penumpang dan pengemudi',reply_markup=markup)
 
-    # def receiveCall(self,callData):
-    #     print(callData)
-    #     print(type(callData))
-    #     #decide entity
-    #     pass
-    #
-    # def routeEntity(self,userEntity,actionEntity):
-    #     if userEntity=='driver':
-    #         self.userToDriver(actionEntity)
-    #     elif userEntity=='passenger':
-    #         self.driverTorUser(actionEntity)
-    #
-    # def userToDriver(self,actionEntity):
-    #     pass
-    #
-    # def driverTorUser(self,actionEntity):
-    #     # send response to user
-    #
-    #     # update order data
-    #     pass

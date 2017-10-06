@@ -47,9 +47,9 @@ class NegoHandler(DataHandler):
         driver=self.dbconnector.read(driverId)
         nama=driver.nama
         alamat=driver.location['address']
+        lat = driver.location['location']['latitude']
+        lng = driver.location['location']['longitude']
         response='Driver '+nama+' INGIN harga '+harga+'\n'
-        response=response+'Lokasi :\n'
-        response=response+alamat
 
         markup = InlineKeyboardMarkup(row_width=1)
         data=orderId+'.'+'setuju.'+driverId
@@ -57,3 +57,4 @@ class NegoHandler(DataHandler):
         markup.add(itembtn2)
 
         bot.send_message(chatId,response , reply_markup=markup)
+        bot.send_venue(chatId,lat,lng,'Lokasi pengemudi',alamat)

@@ -218,7 +218,7 @@ class InlineRoute(object):
 
                 driver=self.dbConDriver.read(driverId)
                 text='Pengemudi: '+driver.nama+' \n'
-                text=text+'No :'+driver.no+' \n'
+                text=text+'No: '+driver.no+' \n'
                 text=text+'Silahkan hubungi pengemudi\n'
                 text=text+'Deskripsi:'+driver.desc+'\n'
                 self.bot.send_message(userId,text)
@@ -226,17 +226,18 @@ class InlineRoute(object):
                 # remove driver from geo
                 self.dbConDriver.remove(driverId)
                 responseDriver=self.finalState['driver'].response
-                responseDriver.addText(driver.toString() + '\n\nBisa langsung mangkal atau ubah info di atas \nKetik /reset untuk ke awal')
+                # responseDriver.addText(driver.toString() + '\n\nBisa langsung mangkal atau ubah info di atas \nKetik /reset untuk ke awal')
                 responseUser=self.finalState['user'].response
-                responseUser.addText(passenger.toString())
+                # responseUser.addText(passenger.toString())
                 self.routeHandler.setState(userId,self.finalState['user'].name)
                 driverIdState=driverId.split('Driver')[0]
-                print(driverIdState)
-                print(self.finalState['driver'].name)
                 self.routeHandler.setState(driverIdState,self.finalState['driver'].name)
-                textClosing='--- Order sudah dipenuhi, kembali ke menu awal ---'
-                self.bot.send_message(userId, text=textClosing)
-                self.bot.send_message(driverId, text=textClosing)
+                # textClosing='--- Order sudah dipenuhi, kembali ke menu awal ---'
+                # self.bot.send_message(userId, text=textClosing)
+                # self.bot.send_message(driverId, text=textClosing)
+                # self.bot.send_message(userId, responseUser.text, reply_markup=responseUser.replyMarkup)
+                # self.bot.send_message(driverIdState, responseDriver.text, reply_markup=responseDriver.replyMarkup)
+
                 self.bot.send_message(userId, responseUser.text, reply_markup=responseUser.replyMarkup)
                 self.bot.send_message(driverIdState, responseDriver.text, reply_markup=responseDriver.replyMarkup)
                 # should set current state to original

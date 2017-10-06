@@ -48,6 +48,7 @@ class DbDriverData(DbRedis):
         driverdata = self.read(key)
 
         driverId = key
+        print(driverId)
 
         # name of location is tipe
         tipe = driverdata.ojek

@@ -86,16 +86,17 @@ class DbUserData(DbRedis):
             logger.error("fail reloading user order data ")
             logger.error(str(e))
 
-        orderData.status = DbUserData.STATUS_CLOSED
-        orderData.timefilled=int(time.time()*1000)
+        if (orderData.status==DbUserData.STATUS_OPEN):
+            orderData.status = DbUserData.STATUS_CLOSED
+            orderData.timefilled=int(time.time()*1000)
 
-        #execute
-        try:
-            self.save(orderValue,orderData)
-            logger.info("order data is saved to db")
-        except Exception as e:
-            logger.error("fail order data ")
-            logger.error(str(e))
+            #execute
+            try:
+                self.save(orderValue,orderData)
+                logger.info("order data is saved to db")
+            except Exception as e:
+                logger.error("fail order data ")
+                logger.error(str(e))
 
 
     def getRadius(self,order):

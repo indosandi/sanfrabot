@@ -12,6 +12,12 @@ class UserData(JsonDeserializable):
     HARGA = 'harga'
     OJEK = 'ojek'
 
+    DEF_NO='blm diisi'
+    DEF_DARI='alamat blm diisi'
+    DEF_KE='alamat blm diisi'
+    DEF_HRG='blm diisin'
+    DEF_NAME='blm diisi'
+    DEF_OJK='motor'
     @classmethod
     def de_json(cls, json_string):
         obj = cls.check_json(json_string)
@@ -29,8 +35,6 @@ class UserData(JsonDeserializable):
         self.nama=nama
         self.dari=dari
         self.ke=ke
-        # self.dari={'lat':None,'long':None,'alamat':None}
-        # self.ke={'lat':None,'long':None,'alamat':None}
         self.harga=harga
         self.ojek=ojek
         self.getNo(msg)
@@ -44,28 +48,26 @@ class UserData(JsonDeserializable):
     def emptyResponse(self, key):
         if key==UserData.NO:
             if self.no is None:
-                self.no='...'
+                self.no=UserData.DEF_NO
         if key==UserData.DARI:
             if self.dari is None:
                 location=Location(106.829285,-6.311525)
-                venue=Venue(location,'','no address',None)
+                venue=Venue(location,'lokasi',UserData.DEF_DARI,None)
                 self.dari=toJson.toJson(venue)
-                # self.dari={'lat':'','long':'','alamat':'kosong'}
         if key==UserData.KE:
             if self.ke is None:
                 location=Location(106.829285,-6.311525)
-                venue=Venue(location,'','no address',None)
+                venue=Venue(location,'lokasi',UserData.DEF_KE,None)
                 self.ke=toJson.toJson(venue)
-                # self.ke={'lat':'','long':'','alamat':'kosong'}
         if key== UserData.HARGA:
             if self.harga is None:
-                self.harga='...'
+                self.harga=UserData.DEF_HRG
         if key==UserData.OJEK:
             if self.ojek is None:
-                self.ojek='motor'
+                self.ojek=UserData.DEF_OJK
         if key == UserData.NAMA:
             if self.nama is None:
-                self.nama = '.'
+                self.nama = UserData.DEF_NAME
 
     def emptyAll(self):
         self.emptyResponse(UserData.NO)
@@ -90,12 +92,12 @@ class UserData(JsonDeserializable):
     def toString(self):
         self.emptyAll()
         outStr = []
-        outStr.append('No:' + self.toStringHandler(UserData.NO))
-        outStr.append('Nama:' + self.toStringHandler(UserData.NAMA))
-        outStr.append('Dari:' + self.toStringHandler(UserData.DARI))
-        outStr.append('Ke:' + self.toStringHandler(UserData.KE))
-        outStr.append('Harga:' + self.toStringHandler(UserData.HARGA))
-        outStr.append('Ojek:' + self.toStringHandler(UserData.OJEK))
+        outStr.append('No: ' + self.toStringHandler(UserData.NO))
+        outStr.append('Nama: ' + self.toStringHandler(UserData.NAMA))
+        outStr.append('Dari: ' + self.toStringHandler(UserData.DARI))
+        outStr.append('Ke: ' + self.toStringHandler(UserData.KE))
+        outStr.append('Harga: ' + self.toStringHandler(UserData.HARGA))
+        outStr.append('Kendaraan: ' + self.toStringHandler(UserData.OJEK))
         strOut = ""
         for s in outStr:
             strOut = strOut + s + '\n'

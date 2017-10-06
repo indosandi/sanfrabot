@@ -14,48 +14,8 @@ class OutHandler(LocationDataHandler):
         # elif message.venue is not None or message.location is not None or message.text!='Tutup':
             super(OutHandler,self).handleData(bot,message,response)
         else: #expected nego harga
-            print('nothing should happen')
+            logger.info('type input when not in nego')
 
-            # find what order this correspond to
-            # driverId=self.getUserKey(message)
-            # orderId=None
-            # try:
-            #     query = 'GET ' + driverId + 'nego '
-            #     orderId=self.dbconnector.dbcon.execute_command(query)
-            # except Exception as e:
-            #     print(str(e))
-            #
-            # if orderId is not None:
-            #     try:
-            #         query = 'DEL ' + driverId + 'nego '
-            #         self.dbconnector.dbcon.execute_command(query)
-            #     except Exception as e:
-            #         print(str(e))
-            #
-            #     harga=''
-            #     if message.text is not None:
-            #         harga=str(message.text)
-            #     try:
-            #         #add to set
-            #         query = 'SADD ' + orderId+'hdriv'+ ' ' + driverId
-            #         self.dbConDriver.dbcon.execute_command(query)
-            #
-            #         # set new harga to driverId
-            #         query = 'SET '+driverId+'Hrg '+harga
-            #         self.dbConDriver.dbcon.execute_command(query)
-            #     except Exception as e:
-            #         print(str(e))
-            #
-            #     userOrder = orderId.split('Ord')[0]
-            #     bot.send_message(userOrder,text=driverId+' '+harga)
-            # else:
-            #     bot.send_message(driverId,text='Command salah')
-            #     # add new price to hargaDriver order set
-            # pass
-
-    # def sendNewPrice(self,bot,orderId,harga):
-    #     userOrder = orderId.split('Ord')[0]
-    #     bot.send_message(userOrder,text=harga)
 
     def dbhandler(self, bot, message, outvenue, response):
     # def handleData(self, bot,message , response):

@@ -26,6 +26,9 @@ class Router(object):
     def addHandler(self,handler):
         self.handler=handler
 
+    def setResetHandler(self,handler):
+        self.resetHandler=handler
+
     def addBot(self,bot):
         self.bot=bot
         # decor=self.bot.message_handler(commands=['start'],regexp="st",func=None,content_types=['location', 'venue','contact','text'])
@@ -55,9 +58,8 @@ class Router(object):
         self.initState.handlerPostcondition(self.bot,message)
         self.initState.handler(self.bot,message)
         self.currentState=self.initState
+        self.resetHandler.handleData(self.bot,message,None)
         self.handler.setState(message.chat.id,self.initState.name)
-        print('reset and start should implement clean GEOPOS driver and Closing order')
-        # print(self.handler.getState(message.chat.id))
 
     def route(self,message):
 
