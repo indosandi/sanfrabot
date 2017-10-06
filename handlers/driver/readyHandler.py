@@ -18,10 +18,9 @@ class ReadyHandler(DataHandler):
         # if message.venue is None and message.location is None:
         self.dbconnector.setReady(userKey)
         #     venueData= driverdata.location
-        bot.send_message(message.chat.id,'lokasi sekarang')
+        bot.send_message(message.chat.id,'lokasi mangkal terbaru')
         bot.send_venue(message.chat.id, venueData['location']['latitude'],venueData
         ['location']['longitude'],venueData['title'],venueData['address'] )
-        print('ready')
         # driverdata.setLocation(outvenue)
         # address = driverdata.location['address']
         # text = 'current location:' + address

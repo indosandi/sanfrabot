@@ -6,7 +6,8 @@ class LocationMessageState(State):
 
     def nextCmd(self,message):
         #harcoded not good
-        if message.venue is not None or message.location is not None or message.text!='Tutup':
+        if message.location is not None:
+        # if message.venue is not None or message.location is not None or message.text!='Tutup':
             return self.name
         else:
             return message.text

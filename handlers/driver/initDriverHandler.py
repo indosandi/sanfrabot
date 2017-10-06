@@ -11,14 +11,13 @@ class InitDriverHandler(DataHandler):
         if self.dbconnector.keyExist(userKey):
             driverdata=self.dbconnector.read(userKey)
         else:
-            driverdata=DriverData()
+            driverdata=DriverData(msg=message)
             try:
                 self.dbconnector.save(userKey,driverdata)
                 logger.info("driver status data is saved to db")
             except Exception as e:
                 logger.error("fail driver status data")
-        print("RESPONSE ADD TEXT")
-        response.addText(driverdata.toString())
+        response.addText(driverdata.toString()+'\n\nBisa langsung mangkal atau ubah info di atas \nKetik /reset untuk ke awal')
 
     def getUserKey(self, message):
         return str(message.chat.id) + 'Driver'

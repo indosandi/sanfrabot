@@ -11,8 +11,7 @@ class InitStateHandler(DataHandler):
             userData=self.dbconnector.read(userKey)
             # self.removeEmpty(userData)
         else:
-            userData=UserData()
-            print('here')
+            userData=UserData(msg=message)
             self.dbconnector.save(userKey,userData)
             # self.removeEmpty(userData)
         # print(userData.toString())

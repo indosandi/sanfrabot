@@ -21,6 +21,7 @@ class Router(object):
         self.id = 0
         self.bot=None
         self.nameState={}
+        self.specHandler={}
 
     def addHandler(self,handler):
         self.handler=handler
@@ -36,6 +37,9 @@ class Router(object):
         decor(self.route)
         decor=self.bot.message_handler(func=lambda message: True,content_types=['location','venue','contact'])
         decor(self.route)
+
+    def addSpecHandler(self,key,handler):
+        self.specHandler[key]=handler
 
     def genRandomRef(self):
         Router.contact=uuid.uuid4()
@@ -56,6 +60,7 @@ class Router(object):
         # print(self.handler.getState(message.chat.id))
 
     def route(self,message):
+
         strCurrentState=self.handler.getState(message.chat.id)
         print(strCurrentState,'strCurrentState',message.chat.id)
         # word = self.getWordMessage(message)
@@ -70,9 +75,14 @@ class Router(object):
         # print(self.nextDef)
         if (self.currentState.decideNext(message, self.inputDef)):
             if ((nextCmd, self.currentState) in self.nextDef):
+                print('DISPATCH RESPONSE')
                 self.dispatchResponse(message,nextCmd)
             else:
+                # if self.inlineRoute.proceed(self.bot,nextCmd,self.currentState):
+                #     logger.info('inline callback is accepted')
+                # else:
                 logger.info("command is not accepted")
+                self.handleSpec(self.currentState,self.bot,message)
                 # print(self.nameState)
                 # print(self.nextDef)
                 # print(nextCmd,self.currentState,'ELSE')
@@ -118,7 +128,11 @@ class Router(object):
         #     nextCmd = message.text
         # return nextCmd
 
-    def routeLocation(self,bot,update):
-        print('location here')
-        location=update.message.location
-        print(location)
+    # def routeLocation(self,bot,update):
+    #     print('location here')
+    #     location=update.message.location
+    #     print(location)
+    def handleSpec(self,state,bot,message):
+        if state in self.specHandler:
+            print(state,'handle spec')
+            self.specHandler[state].handleData(bot,message)

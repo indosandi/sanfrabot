@@ -16,23 +16,36 @@ class ReadyHandler(DataHandler):
 
     def sendDriver(self,bot,message,listDr,order):
         print(listDr,'LIST DIR')
-        if len(listDr)>0:
+        if len(listDr)==0:
+            chatId=self.getUserKey(message)
+            bot.send_message(chatId, 'Tidak ada driver ditemukan. Coba sesaat lagi atau ganti kendaraan')
+        # if len(listDr)>0:
+        else:
             drivers=listDr[0][::2]
             dist=listDr[0][1::2]
+            jmlahDriver=str(len(listDr))
+            chatId=self.getUserKey(message)
+            bot.send_message(chatId, 'Order akan dikirim ke '+jmlahDriver+' drivers. '
+                                                                          'Mereka bisa setuju atau menawar harga')
             for driver,dist in zip(drivers,dist):
                 chatId=driver.split('Driver')[0]
                 self.composeResponse(bot,order,dist,chatId)
 
     def composeResponse(self,bot,order,dist,chatId):
         text='ORDER!!!!!\n'
-        text=text+'DARI: '+order.dari['address']+'\n'
-        text=text+'KE: '+order.ke['address']+'\n'
+        # text=text+'DARI: '+order.dari['address']+'\n'
+        # text=text+'KE: '+order.ke['address']+'\n'
         text=text+'HARGA: '+order.hargaPassenger+'\n'
         text=text+'jarak ke penumpang '+dist+' KM\n'
         bot.send_message(chatId,text)
         lat = order.dari['location']['latitude']
         lng = order.dari['location']['longitude']
-        bot.send_venue(chatId,lat,lng,'Lokasi Penumpang','')
+        address=order.dari['address']
+        bot.send_venue(chatId,lat,lng,'Lokasi Penumpang',address)
+        lat = order.ke['location']['latitude']
+        lng = order.ke['location']['longitude']
+        address=order.ke['address']
+        bot.send_venue(chatId,lat,lng,'Tujuan Penumpang',address)
         self.composeInline(bot,order,dist,chatId)
 
     def composeInline(self,bot,order,dist,chatId):
@@ -52,24 +65,25 @@ class ReadyHandler(DataHandler):
             itembtn2 = InlineKeyboardButton('setuju', callback_data=callSetuju)
             markup.add(itembtn1,itembtn2)
 
-        bot.send_message(chatId,'Pilih',reply_markup=markup)
+        bot.send_message(chatId,'Disini harga ditentukan oleh penumpang dan pengemudi',reply_markup=markup)
 
-    def receiveCall(self,callData):
-        print(callData)
-        #decide entity
-        pass
-
-    def routeEntity(self,userEntity,actionEntity):
-        if userEntity=='driver':
-            self.userToDriver(actionEntity)
-        elif userEntity=='passenger':
-            self.driverTorUser(actionEntity)
-
-    def userToDriver(self,actionEntity):
-        pass
-
-    def driverTorUser(self,actionEntity):
-        # send response to user
-
-        # update order data
-        pass
+    # def receiveCall(self,callData):
+    #     print(callData)
+    #     print(type(callData))
+    #     #decide entity
+    #     pass
+    #
+    # def routeEntity(self,userEntity,actionEntity):
+    #     if userEntity=='driver':
+    #         self.userToDriver(actionEntity)
+    #     elif userEntity=='passenger':
+    #         self.driverTorUser(actionEntity)
+    #
+    # def userToDriver(self,actionEntity):
+    #     pass
+    #
+    # def driverTorUser(self,actionEntity):
+    #     # send response to user
+    #
+    #     # update order data
+    #     pass

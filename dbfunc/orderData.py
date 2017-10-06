@@ -73,7 +73,7 @@ class OrderData(JsonDeserializable):
                 self.hargaPassenger='0'
         if key==OrderData.HARGA_DRIVER:
             if self.hargaDriver is None:
-                self.hargaDriver ='0'
+                self.hargaDriver =''
         if key==OrderData.AGREE_LIST:
             if self.agreeList is None:
                 self.agreeList = []

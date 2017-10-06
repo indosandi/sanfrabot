@@ -5,7 +5,8 @@ import dbfunc.toJson as toJson
 
 class UserData(JsonDeserializable):
 
-    NO = 'phone_number'
+    NO = 'no'
+    NAMA = 'nama'
     DARI = 'dari'
     KE = 'ke'
     HARGA = 'harga'
@@ -14,22 +15,31 @@ class UserData(JsonDeserializable):
     @classmethod
     def de_json(cls, json_string):
         obj = cls.check_json(json_string)
+        print(obj)
         no = obj['no']
         dari = obj['dari']
         ke = obj['ke']
         harga = obj['harga']
         ojek = obj['ojek']
-        return cls(no,dari,ke,harga,ojek)
+        nama =obj['nama']
+        return cls(no=no,dari=dari,ke=ke,harga=harga,ojek=ojek,nama=nama)
 
-    def __init__(self,no=None,dari=None,ke=None,harga=None,ojek=None):
+    def __init__(self,no=None,dari=None,ke=None,harga=None,ojek=None,nama=None,msg=None):
         self.no=no
+        self.nama=nama
         self.dari=dari
         self.ke=ke
         # self.dari={'lat':None,'long':None,'alamat':None}
         # self.ke={'lat':None,'long':None,'alamat':None}
         self.harga=harga
         self.ojek=ojek
+        self.getNo(msg)
         self.emptyAll()
+
+    def getNo(self,msg):
+        if msg is not None:
+            if (msg.chat.first_name is not None):
+                self.nama=msg.chat.first_name
 
     def emptyResponse(self, key):
         if key==UserData.NO:
@@ -53,6 +63,9 @@ class UserData(JsonDeserializable):
         if key==UserData.OJEK:
             if self.ojek is None:
                 self.ojek='motor'
+        if key == UserData.NAMA:
+            if self.nama is None:
+                self.nama = '.'
 
     def emptyAll(self):
         self.emptyResponse(UserData.NO)
@@ -60,6 +73,7 @@ class UserData(JsonDeserializable):
         self.emptyResponse(UserData.KE)
         self.emptyResponse(UserData.HARGA)
         self.emptyResponse(UserData.OJEK)
+        self.emptyResponse(UserData.NAMA)
 
     # def removeEmpty(self, dic):
     #     if ~(DataHandler.NO in dic):
@@ -77,6 +91,7 @@ class UserData(JsonDeserializable):
         self.emptyAll()
         outStr = []
         outStr.append('No:' + self.toStringHandler(UserData.NO))
+        outStr.append('Nama:' + self.toStringHandler(UserData.NAMA))
         outStr.append('Dari:' + self.toStringHandler(UserData.DARI))
         outStr.append('Ke:' + self.toStringHandler(UserData.KE))
         outStr.append('Harga:' + self.toStringHandler(UserData.HARGA))
@@ -100,9 +115,10 @@ class UserData(JsonDeserializable):
             return self.harga
         elif key == UserData.OJEK:
             return self.ojek
+        elif key == UserData.NAMA:
+            return self.nama
 
     def setDari(self,dari):
-        print(type(dari))
         if (isinstance(dari,Venue)):
             print('TJOSON')
             self.dari=toJson.toJson(dari)
@@ -118,12 +134,12 @@ class UserData(JsonDeserializable):
 
     def toJsonUserData(self):
         dic = {}
-        dic['no'] = self.ifNone(self.no)
-        print(self.dari)
-        dic['dari'] = self.dari
-        dic['ke'] = self.ke
-        dic['harga'] = self.ifNone(self.harga)
-        dic['ojek'] = self.ifNone(self.ojek)
+        dic[UserData.NO] = self.ifNone(self.no)
+        dic[UserData.DARI] = self.dari
+        dic[UserData.KE] = self.ke
+        dic[UserData.HARGA] = self.ifNone(self.harga)
+        dic[UserData.OJEK] = self.ifNone(self.ojek)
+        dic[UserData.NAMA] = self.ifNone(self.nama)
         return dic
 
     def ifNone(self,data):

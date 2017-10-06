@@ -3,6 +3,7 @@ from dbfunc.userData import UserData
 from dbfunc.orderData import OrderData
 import json
 import time
+import datetime
 
 import logging
 logger = logging.getLogger()
@@ -19,6 +20,7 @@ class DbUserData(DbRedis):
 
     def read(self,key):
         obj=super(DbUserData,self).read(key)
+        print(obj,'OBJ')
         return UserData.de_json(obj)
 
     def readOrder(self,key):
@@ -41,7 +43,10 @@ class DbUserData(DbRedis):
         dari=userdata.dari
         ke=userdata.ke
         sourceUser=key
-        timestamp=int(time.time()*1000)
+        timestamp=int(time.time())
+        dateTime=datetime.datetime.fromtimestamp(timestamp).strftime('%y%m%d%H%M%S')
+        idOrder=dateTime
+        # idOrder=int(timestamp%1000)/10
 
         orderData=OrderData()
         orderData.userSource=sourceUser
@@ -49,13 +54,12 @@ class DbUserData(DbRedis):
         orderData.timestamp=timestamp
         orderData.dari=dari
         orderData.ke=ke
-        #orderData.setDari(dari)
-        #orderData.setKe(ke)
         orderData.status=DbUserData.STATUS_OPEN
-        orderData.id=key
 
-        keyOrder=key+'Order'+str(timestamp)
+        keyOrder=key+'Ord'+str(idOrder)
         keyUserOrder=key+'Order'
+        orderData.id=keyOrder
+        orderData.hargaDriver=keyOrder+'hdriv'
 
         #execute
         try:
@@ -63,6 +67,8 @@ class DbUserData(DbRedis):
             query="SET"+' '+keyUserOrder+' '+keyOrder
             self.dbcon.execute_command(query)
             logger.info("order data is saved to db")
+            query="SADD "+orderData.hargaDriver+' '+'empty'
+            self.dbcon.execute_command(query)
         except Exception as e:
             logger.error("fail order data ")
             logger.error(str(e))
@@ -75,8 +81,6 @@ class DbUserData(DbRedis):
         try:
             query='GET '+key+'Order'
             orderValue=self.dbcon.execute_command(query)
-            # orderValue=self.read(key+'Order')
-            print(orderValue)
             orderData= self.readOrder(orderValue)
         except Exception as e:
             logger.error("fail reloading user order data ")
@@ -84,8 +88,6 @@ class DbUserData(DbRedis):
 
         orderData.status = DbUserData.STATUS_CLOSED
         orderData.timefilled=int(time.time()*1000)
-        print(orderData.timefilled)
-        print(orderData.status)
 
         #execute
         try:

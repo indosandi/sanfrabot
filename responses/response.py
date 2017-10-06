@@ -4,7 +4,7 @@ class Response(object):
     '''
 
     def __init__(self):
-        self.text="Ok"
+        self.text="\xF0\x9F\x91\x8C'"
         self.replyMarkup=None
         self.phone_No=None
         self.location=None

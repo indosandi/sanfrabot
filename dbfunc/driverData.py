@@ -21,10 +21,10 @@ class DriverData(JsonDeserializable):
         desc = obj[DriverData.DESC]
         ojek = obj[DriverData.OJEK]
         location=obj[DriverData.LOKASI]
-        return cls(no,nama,desc,ojek,location)
+        return cls(no=no,nama=nama,desc=desc,ojek=ojek,location=location)
         # return cls(no,nama,noMotor,desc,ojek,location)
 
-    def __init__(self,no=None,nama=None,desc=None,ojek=None,location=None):
+    def __init__(self,no=None,nama=None,desc=None,ojek=None,location=None,msg=None):
     # def __init__(self,no=None,nama=None,noMotor=None,desc=None,ojek=None,location=None):
         self.no=no
         # self.noMotor=noMotor
@@ -32,7 +32,21 @@ class DriverData(JsonDeserializable):
         self.desc=desc
         self.ojek=ojek
         self.location=location
+        self.getNo(msg)
         self.emptyAll()
+
+    def getNo(self,msg):
+        if msg is not None:
+            if (msg.chat.first_name is not None):
+                self.nama=self.getEmpty(msg.chat.first_name)
+            if (msg.chat.last_name is not None):
+                self.nama=self.nama+' '+self.getEmpty(msg.chat.last_name)
+
+    def getEmpty(self,stri):
+        if stri is None:
+            return ''
+        else:
+            return stri
 
     def emptyResponse(self, key):
         if key==DriverData.NO:
@@ -55,6 +69,9 @@ class DriverData(JsonDeserializable):
                 location=Location(106.829285,-6.311525)
                 venue=Venue(location,'','no address',None)
                 self.location=toJson.toJson(venue)
+        if key == DriverData.NAMA:
+            if self.nama is None:
+                self.nama = '.'
 
     def emptyAll(self):
         self.emptyResponse(DriverData.NO)
@@ -70,13 +87,13 @@ class DriverData(JsonDeserializable):
         outStr.append('Nama:' + self.toStringHandler(DriverData.NAMA))
         outStr.append('Phone:' + self.toStringHandler(DriverData.NO))
         # outStr.append('No plat:' + self.toStringHandler(DriverData.NO_MOTOR))
-        outStr.append('Tipe:' + self.toStringHandler(DriverData.OJEK))
+        outStr.append('Kendaraan:' + self.toStringHandler(DriverData.OJEK))
         outStr.append('Lokasi terakhir:' + self.toStringHandler(DriverData.LOKASI))
         outStr.append('Deskripsi:' + self.toStringHandler(DriverData.DESC))
         strOut = ""
         for s in outStr:
             strOut = strOut + s + '\n'
-        strOut=strOut+'Ketik /reset untuk ke awal'
+        # strOut=strOut+'Ketik /reset untuk ke awal'
         return strOut
 
     def setLocation(self,venue):

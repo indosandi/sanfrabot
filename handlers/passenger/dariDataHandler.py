@@ -14,7 +14,6 @@ class DariDataHandler(LocationDataHandler):
             # userdata.dari=venue
         else:
             userdata=UserData()
-            print(type(venue))
             userdata.setDari(venue)
             # userdata.dari=venue
         try:
