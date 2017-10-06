@@ -438,6 +438,9 @@ class StatusState(object):
         # self.inlineRoute.addBot(self.router.bot)
         self.inlineRoute.addDriverDB(dbDriver)
         self.inlineRoute.addUserDB(db)
+        self.inlineRoute.setFinalState('driver',initDriverSt)
+        self.inlineRoute.setFinalState('user',self.initState)
+        self.inlineRoute.setRouteHandler(handler)
         # self.inlineRoute.setupRoute()
 
         handler = NegoHandler()

@@ -67,7 +67,7 @@ class DbUserData(DbRedis):
             query="SET"+' '+keyUserOrder+' '+keyOrder
             self.dbcon.execute_command(query)
             logger.info("order data is saved to db")
-            query="SADD "+orderData.hargaDriver+' '+'empty'
+            query="SADD "+orderData.hargaDriver+' '+'test'
             self.dbcon.execute_command(query)
         except Exception as e:
             logger.error("fail order data ")

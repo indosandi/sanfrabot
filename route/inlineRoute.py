@@ -7,6 +7,13 @@ class InlineRoute(object):
 
     def __init__(self):
         self.inlineState={}
+        self.finalState={}
+
+    def setRouteHandler(self,handler):
+        self.routeHandler=handler
+
+    def setFinalState(self,key,state):
+        self.finalState[key]=state
 
     def addUserDB(self,db):
         self.dbConUser=db
@@ -216,6 +223,23 @@ class InlineRoute(object):
                 text=text+'Deskripsi:'+driver.desc+'\n'
                 self.bot.send_message(userId,text)
 
+                # remove driver from geo
+                self.dbConDriver.remove(driverId)
+                responseDriver=self.finalState['driver'].response
+                responseDriver.addText(driver.toString() + '\n\nBisa langsung mangkal atau ubah info di atas \nKetik /reset untuk ke awal')
+                responseUser=self.finalState['user'].response
+                responseUser.addText(passenger.toString())
+                self.routeHandler.setState(userId,self.finalState['user'].name)
+                driverIdState=driverId.split('Driver')[0]
+                print(driverIdState)
+                print(self.finalState['driver'].name)
+                self.routeHandler.setState(driverIdState,self.finalState['driver'].name)
+                textClosing='--- Order sudah dipenuhi, kembali ke menu awal ---'
+                self.bot.send_message(userId, text=textClosing)
+                self.bot.send_message(driverId, text=textClosing)
+                self.bot.send_message(userId, responseUser.text, reply_markup=responseUser.replyMarkup)
+                self.bot.send_message(driverIdState, responseDriver.text, reply_markup=responseDriver.replyMarkup)
+                # should set current state to original
+
             except Exception as e:
                 logger.error(str(e))
-        # self.sendBothContact()
