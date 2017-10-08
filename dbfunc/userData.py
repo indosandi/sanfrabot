@@ -2,6 +2,7 @@ from telebot.types import JsonDeserializable
 from telebot.types import Venue
 from telebot.types import Location
 import dbfunc.toJson as toJson
+import support.respList as respL
 
 class UserData(JsonDeserializable):
 
@@ -91,18 +92,12 @@ class UserData(JsonDeserializable):
 
     def toString(self):
         self.emptyAll()
-        outStr = []
-        outStr.append('No: ' + self.toStringHandler(UserData.NO))
-        outStr.append('Nama: ' + self.toStringHandler(UserData.NAMA))
-        outStr.append('Dari: ' + self.toStringHandler(UserData.DARI))
-        outStr.append('Ke: ' + self.toStringHandler(UserData.KE))
-        outStr.append('Harga: ' + self.toStringHandler(UserData.HARGA))
-        outStr.append('Kendaraan: ' + self.toStringHandler(UserData.OJEK))
-        strOut = ""
-        for s in outStr:
-            strOut = strOut + s + '\n'
-        strOut=strOut+'Ketik /reset untuk ke awal'
-        return strOut
+        return respL.userData(self.toStringHandler(UserData.NO),
+                                self.toStringHandler(UserData.NAMA),
+                                self.toStringHandler(UserData.DARI),
+                                self.toStringHandler(UserData.KE),
+                                self.toStringHandler(UserData.HARGA),
+                                self.toStringHandler(UserData.OJEK))
 
     def toStringHandler(self, key):
         if key == UserData.DARI:

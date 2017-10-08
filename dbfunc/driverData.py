@@ -2,7 +2,7 @@ from telebot.types import JsonDeserializable
 from telebot.types import Venue
 from telebot.types import Location
 import dbfunc.toJson as toJson
-
+import support.respList as respL
 class DriverData(JsonDeserializable):
 
     NO = 'phone_number'
@@ -83,18 +83,11 @@ class DriverData(JsonDeserializable):
 
     def toString(self):
         self.emptyAll()
-        outStr = []
-        outStr.append('Nama:' + self.toStringHandler(DriverData.NAMA))
-        outStr.append('Phone:' + self.toStringHandler(DriverData.NO))
-        # outStr.append('No plat:' + self.toStringHandler(DriverData.NO_MOTOR))
-        outStr.append('Kendaraan:' + self.toStringHandler(DriverData.OJEK))
-        outStr.append('Lokasi terakhir:' + self.toStringHandler(DriverData.LOKASI))
-        outStr.append('Deskripsi:' + self.toStringHandler(DriverData.DESC))
-        strOut = ""
-        for s in outStr:
-            strOut = strOut + s + '\n'
-        # strOut=strOut+'Ketik /reset untuk ke awal'
-        return strOut
+        return respL.driverData(self.toStringHandler(DriverData.NAMA),
+                                self.toStringHandler(DriverData.NO),
+                                self.toStringHandler(DriverData.OJEK),
+                                self.toStringHandler(DriverData.LOKASI),
+                                self.toStringHandler(DriverData.DESC))
 
     def setLocation(self,venue):
         if (isinstance(venue,Venue)):

@@ -1,6 +1,7 @@
 from handlers.dataHandler import DataHandler
 from telebot.types import InlineKeyboardButton,InlineKeyboardMarkup
 import logging
+import support.respList as respL
 logger = logging.getLogger()
 
 class ReadyHandler(DataHandler):
@@ -18,27 +19,24 @@ class ReadyHandler(DataHandler):
         print(listDr,'LIST DIR')
         if len(listDr)==0:
             chatId=self.getUserKey(message)
-            bot.send_message(chatId, 'Tidak ada driver ditemukan. Coba sesaat lagi atau ganti kendaraan')
+            bot.send_message(chatId, respL.noDriver())
         # if len(listDr)>0:
         else:
             drivers=listDr[0][::2]
             dists=listDr[0][1::2]
             jmlahDriver=str(len(listDr))
             chatId=self.getUserKey(message)
-            bot.send_message(chatId, 'Order akan dikirim ke '+jmlahDriver+' drivers. '
-                                                                          'Mereka bisa setuju atau menawar harga')
+            bot.send_message(chatId, respL.orderHowMany(jmlahDriver))
             for driver,dist in listDr:
-            # for driver,dist in zip(drivers,dists):
                 chatId=driver.split('Driver')[0]
                 print(driver,dist,'DRIVE MULTI')
                 self.composeResponse(bot,order,dist,chatId)
 
     def composeResponse(self,bot,order,dist,chatId):
-        text='ORDER!!!!!\n'
-        # text=text+'DARI: '+order.dari['address']+'\n'
-        # text=text+'KE: '+order.ke['address']+'\n'
-        text=text+'HARGA: '+order.hargaPassenger+'\n'
-        text=text+'jarak ke penumpang '+dist+' KM\n'
+        # text='ORDER!!!!!\n'
+        # text=text+'HARGA: '+order.hargaPassenger+'\n'
+        # text=text+'jarak ke penumpang '+dist+' KM\n'
+        text=respL.orderToDriver(order.hargaPassenger,dist)
         bot.send_message(chatId,text)
         lat = order.dari['location']['latitude']
         lng = order.dari['location']['longitude']
@@ -67,5 +65,5 @@ class ReadyHandler(DataHandler):
             itembtn2 = InlineKeyboardButton('setuju', callback_data=callSetuju)
             markup.add(itembtn1,itembtn2)
 
-        bot.send_message(chatId,'Disini harga ditentukan oleh penumpang dan pengemudi',reply_markup=markup)
+        bot.send_message(chatId,respL.hargaInfo(),reply_markup=markup)
 

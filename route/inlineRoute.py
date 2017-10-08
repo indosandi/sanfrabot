@@ -1,7 +1,10 @@
+# -*- coding: UTF-8 -*-
 import logging
 import time
 from dbfunc.dbUserData import DbUserData
 from telebot.types import InlineKeyboardButton,InlineKeyboardMarkup
+import support.emojis as emo
+import support.respList as respL
 logger = logging.getLogger()
 class InlineRoute(object):
 
@@ -119,13 +122,7 @@ class InlineRoute(object):
         alamat=driver.location['address']
         lat=driver.location['location']['latitude']
         lng=driver.location['location']['longitude']
-        # if setuju:
         response='Driver '+nama+' SETUJU dengan harga '+harga+'\n'
-        # else:
-        # response='Driver '+nama+' INGIN harga '+harga+'\n'
-
-        # response=response+'Lokasi :\n'
-        # response=response+alamat
         markup = InlineKeyboardMarkup(row_width=1)
         data=orderId+'.'+'setuju.'+driverId
         itembtn2 = InlineKeyboardButton('Pilih', callback_data=data)
@@ -156,16 +153,9 @@ class InlineRoute(object):
             if res==1:
                 self.bot.send_message(driverId,'Harga sudah dimasukan')
             else:
-                text='Ketik harga yang diinginkan dan tekan SEND\n'
-                # text+='Waktu menawar harga hanya 30 detik'
-                # text=text+'gunakan mangkal hanya untuk perbarui posisi \n'
-                # text=text+'gunakan tutup untuk non-aktifkan \n'
-                self.bot.send_message(driverId,text)
-                # orderData.hargaDriver[driverId]='x'
+                self.bot.send_message(driverId,respL.ketikHarga())
                 try:
                     query= 'SET '+driverId+'nego '+orderId#' EX 300 NX'
-                    # print(query)
-                    # print(driverId)
                     self.dbConDriver.dbcon.execute_command(query)
                     query = 'SADD ' + setHargaDriver + ' ' + driverId
                     self.dbConDriver.dbcon.execute_command(query)
@@ -173,27 +163,6 @@ class InlineRoute(object):
                     print(str(e))
                     pass
                 self.dbConUser.saveOrder(orderId,orderData)
-
-        # for pair in hargaDriver:
-        #     for key in pair:
-        #         if (key=='driverId'):
-        #             keyPrice=key
-        #             break
-        #     if keyPrice is not None:
-        #         break
-        # if keyPrice is not None:
-        #     self.bot.send_message(driverId,'Harga hanya bisa ditawar satu kali')
-        # else:
-        #     self.bot.send_message(driverId,'Masukan harga yang diingingkan')
-
-        # if self.dbcon.keyExist(key):
-        # else:
-            #save driver new price event
-            # now=str(int(time.time()*1000))
-            # try:
-            #     self.dbcon.save(key,now)
-            # except Exception as e:
-            #     logger.error(str(e))
 
     def agree(self,userId,orderId,driverId,call):
         # driverId=str(userId+'Driver')
@@ -211,36 +180,23 @@ class InlineRoute(object):
                 self.dbConUser.saveOrder(orderId,orderData)
                 logger.info('order %s is filled wiht %s',orderId,userId)
                 passenger=self.dbConUser.read(userId)
-                text='Penumpang '+passenger.nama+' memilih anda\n'
-                text=text+'No :'+passenger.no+'\n'
-                text=text+'Silahkan hubungi penumpang\n'
+                text=respL.userSendInfo(passenger.nama,passenger.no)
                 self.bot.send_message(driverId,text)
 
                 driver=self.dbConDriver.read(driverId)
-                text='Pengemudi: '+driver.nama+' \n'
-                text=text+'No: '+driver.no+' \n'
-                text=text+'Silahkan hubungi pengemudi\n'
-                text=text+'Deskripsi:'+driver.desc+'\n'
+                text=emo.sirine+emo.sirine+'\n'
+                text=respL.driverSendInfo(driver.nama,driver.no,driver.desc)
                 self.bot.send_message(userId,text)
 
                 # remove driver from geo
                 self.dbConDriver.remove(driverId)
                 responseDriver=self.finalState['driver'].response
-                # responseDriver.addText(driver.toString() + '\n\nBisa langsung mangkal atau ubah info di atas \nKetik /reset untuk ke awal')
                 responseUser=self.finalState['user'].response
-                # responseUser.addText(passenger.toString())
                 self.routeHandler.setState(userId,self.finalState['user'].name)
                 driverIdState=driverId.split('Driver')[0]
                 self.routeHandler.setState(driverIdState,self.finalState['driver'].name)
-                # textClosing='--- Order sudah dipenuhi, kembali ke menu awal ---'
-                # self.bot.send_message(userId, text=textClosing)
-                # self.bot.send_message(driverId, text=textClosing)
-                # self.bot.send_message(userId, responseUser.text, reply_markup=responseUser.replyMarkup)
-                # self.bot.send_message(driverIdState, responseDriver.text, reply_markup=responseDriver.replyMarkup)
-
                 self.bot.send_message(userId, responseUser.text, reply_markup=responseUser.replyMarkup)
                 self.bot.send_message(driverIdState, responseDriver.text, reply_markup=responseDriver.replyMarkup)
-                # should set current state to original
 
             except Exception as e:
                 logger.error(str(e))

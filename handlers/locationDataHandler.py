@@ -4,8 +4,6 @@ from handlers.dataHandler import DataHandler
 from telebot.types import Location
 from telebot.types import Venue
 logger = logging.getLogger()
-# from telegram import Venue
-# from telegram import Location
 import support.geocode as gserv
 
 class LocationDataHandler(DataHandler):
@@ -40,7 +38,7 @@ class LocationDataHandler(DataHandler):
         elif (location is not None and venue is None):
             #get geocoding
             outgps=gserv.getAddress(location.latitude,location.longitude)
-            outalamat='GPS:'+outgps
+            outalamat=outgps
             outvenue=Venue(location,'',outalamat,None)
             # outvenue={'location':location,'alamat':'GPS saya'}
             # logger.info('alamat is added to location')
@@ -54,12 +52,3 @@ class LocationDataHandler(DataHandler):
 
     def dbhandler(self, bot,message , outvenue, response):
         pass
-        # userKey=update.message.chat_id
-        # userdata=None
-        # if self.dbconnector.keyExist(userKey):
-        #     userdata=self.dbconnector.read(userKey)
-        #     userdata.location=venue
-        # else:
-        #     userdata=UserData()
-        #     userdata.no=venue
-        # self.dbconnector.save(userKey,userdata)
