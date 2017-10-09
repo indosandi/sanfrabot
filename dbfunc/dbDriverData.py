@@ -33,7 +33,6 @@ class DbDriverData(DbRedis):
         # create query
         # GEOADD tipe lat lng driverId
         query="GEOADD"+' '+str(tipe)+' '+str(lng)+' '+str(lat)+' '+driverId
-        print(query)
 
         #execute
         try:
@@ -48,7 +47,6 @@ class DbDriverData(DbRedis):
         driverdata = self.read(key)
 
         driverId = key
-        print(driverId)
 
         # name of location is tipe
         tipe = driverdata.ojek

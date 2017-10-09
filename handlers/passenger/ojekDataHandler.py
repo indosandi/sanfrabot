@@ -1,6 +1,7 @@
 from dbfunc.userData import UserData
 from handlers.dataHandler import DataHandler
 import logging
+import traceback
 
 logger = logging.getLogger()
 class OjekDataHandler(DataHandler):
@@ -20,7 +21,7 @@ class OjekDataHandler(DataHandler):
             logger.info("ojek data is saved to db")
         except Exception as e:
             logger.error("fail ojek data ")
-            print(str(e))
+            traceback.print_exc()
 
     def getUserKey(self,message):
         return str(message.chat.id)

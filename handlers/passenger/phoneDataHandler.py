@@ -13,11 +13,9 @@ class PhoneDataHandler(DataHandler):
         if self.dbconnector.keyExist(userKey):
             userdata=self.dbconnector.read(userKey)
             userdata.no=phone_number
-            # print('phone handler exist')
         else:
             userdata=UserData()
             userdata.no=phone_number
-            # print('phone handler not exist',phone_number)
         try:
             self.dbconnector.save(userKey,userdata)
             logger.info("phone data is saved to db")

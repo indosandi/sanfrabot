@@ -1,6 +1,7 @@
 import logging
 from handlers.locationDataHandler import LocationDataHandler
 from dbfunc.userData import UserData
+import traceback
 
 logger = logging.getLogger()
 
@@ -21,12 +22,8 @@ class DariDataHandler(LocationDataHandler):
             logger.info("dari data is saved to db")
         except Exception as e:
             logger.error("fail dari data ")
-            print(str(e))
+            traceback.print_exc()
 
     def getUserKey(self,message):
         return str(message.chat.id)+'locationTemp'
 
-    # def tunggu(self):
-    #     for i in range(0,10):
-    #         time.sleep(1)
-    #         print(i)

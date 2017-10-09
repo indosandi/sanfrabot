@@ -36,7 +36,6 @@ class InlineRoute(object):
 
     def callback(self,call):
         data=call.data
-        print(data,'data')
         listData=data.split('@&')
         orderId=listData[0]
         buttonId=listData[1]
@@ -69,14 +68,6 @@ class InlineRoute(object):
         else:
             sender='Driver'
 
-        # user=userEntity.split('Driver')
-        # print(user,actionEntity,orderId)
-        # if len(user)>1:
-        #     sender='Driver'
-        #     # self.driverTorUser(actionEntity,orderId)
-        # else:
-        #     sender='Passenger'
-            # self.userToDriver(actionEntity,orderId)
         if actionEntity=='s' and sender=='Driver':
             self.driverAgree(userId,orderId,userOrder)
             # send response driver agree
@@ -88,7 +79,6 @@ class InlineRoute(object):
     def driverAgree(self,userId,orderId,userOrder):
 
         driverId=str(userId+'Driver')
-        # driverId=str(userId+'Driver')
         orderData=self.dbConUser.readOrder(orderId)
         status=orderData.status
         hargaPas=orderData.hargaPassenger
@@ -141,9 +131,8 @@ class InlineRoute(object):
                 query='SISMEMBER '+setHargaDriver+' '+driverId
                 res=self.dbConDriver.dbcon.execute_command(query)
             except Exception as e:
-                print(str(e))
+                traceback.print_exc()
 
-            print(res,'res')
 
             if res==1:
                 self.bot.send_message(driverId,'Harga sudah dimasukan')
@@ -155,8 +144,7 @@ class InlineRoute(object):
                     query = 'SADD ' + setHargaDriver + ' ' + driverId
                     self.dbConDriver.dbcon.execute_command(query)
                 except Exception as e:
-                    print(str(e))
-                    pass
+                    traceback.print_exc()
                 self.dbConUser.saveOrder(orderId,orderData)
 
     def agree(self,userId,orderId,driverId,pilih):
@@ -168,25 +156,13 @@ class InlineRoute(object):
         if pilih=='s':
             hargaAkhir=orderData.hargaPassenger
         elif pilih=='n':
-        # try:
-        #     query='EXISTS ' + orderId + 'd' + driverId + 'Hrg '
-        #     print(query,'query')
-        #     keyExist=self.dbConUser.dbcon.execute_command(query)
-        # except Exception as e:
-        #     traceback.print_exc()
-        #
-        # print(keyExist)
-        # if keyExist==1:
             try:
                 hargaAkhir=self.dbConUser.dbcon.get(orderId + 'd' + driverId+'Hrg')
             except Exception as e:
                 traceback.print_exc()
                 hargaAkhir='error'
-        # elif keyExist==0:
-        #     hargaAkhir=orderData.hargaPassenger
         else:
             hargaAkhir='error'
-        print(hargaAkhir)
 
         if (status == DbUserData.STATUS_FILLED):
             self.bot.send_message(userId, 'Order sudah diambil')

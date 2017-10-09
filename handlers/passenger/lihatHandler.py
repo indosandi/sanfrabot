@@ -2,6 +2,7 @@ from handlers.dataHandler import DataHandler
 import logging
 import support.respList as respL
 import support.staticmap as gmap
+import traceback
 logger = logging.getLogger()
 
 class LihatHandler(DataHandler):
@@ -26,7 +27,6 @@ class LihatHandler(DataHandler):
                 marker=[]
                 for driver, dist in listDr:
                     chatId = driver.split('Driver')[0]
-                    print(self.getPos(driver,tipe))
                     [[lngD,latD]]=self.getPos(driver,tipe)
                     marker.append({"lat":latD,"lng":lngD})
                 url=gmap.genUrl({"lat":lat,"lng":lng},marker)
@@ -48,7 +48,7 @@ class LihatHandler(DataHandler):
             tipe=userData.ojek
             return lat,lng,tipe
         except Exception as e:
-            print(str(e))
+            traceback.print_exc()
             return None,None,None
 
     def getRadius(self,tipe,lng,lat):

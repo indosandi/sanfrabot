@@ -1,6 +1,7 @@
 from dbfunc.driverData import DriverData
 from handlers.dataHandler import DataHandler
 import logging
+import traceback
 logger = logging.getLogger()
 class DriverOjek(DataHandler):
 
@@ -19,7 +20,7 @@ class DriverOjek(DataHandler):
             logger.info("driver ojek data is saved to db")
         except Exception as e:
             logger.error("fail ojek data")
-            print(str(e))
+            traceback.print_exc()
 
     def getUserKey(self,message):
         return str(message.chat.id)+'Driver'

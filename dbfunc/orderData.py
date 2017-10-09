@@ -145,12 +145,9 @@ class OrderData(JsonDeserializable):
     #         return self.ojek
 
     def setDari(self,dari):
-        print(type(dari))
         if (isinstance(dari,Venue)):
-            print('TJOSON')
             self.dari=toJson.toJson(dari)
         else:
-            print('NOTJOSON')
             self.dari=dari
 
     def setKe(self,ke):

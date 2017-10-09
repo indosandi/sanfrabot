@@ -7,10 +7,8 @@ class DbRedis(Dbfn):
         self.passwd=os.environ['password']
         self.host=os.environ['redisHost']
         self.port=int(os.environ['redisPort'])
-        # print(self.host)
         pool = redis.ConnectionPool(host=self.host, port=self.port, password=self.passwd)
         self.dbcon=redis.Redis(connection_pool=pool)
-        # self.dbcon=redis.StrictRedis(host=self.host,port=self.port,password=self.passwd)
 
     def save(self,key,value):
         self.dbcon.set(key,value)

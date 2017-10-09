@@ -16,7 +16,6 @@ class ReadyHandler(DataHandler):
         return str(message.chat.id)
 
     def sendDriver(self,bot,message,listDr,order):
-        print(listDr,'LIST DIR')
         if len(listDr)==0:
             chatId=self.getUserKey(message)
             bot.send_message(chatId, respL.noDriver())
@@ -29,13 +28,9 @@ class ReadyHandler(DataHandler):
             bot.send_message(chatId, respL.orderHowMany(jmlahDriver))
             for driver,dist in listDr:
                 chatId=driver.split('Driver')[0]
-                print(driver,dist,'DRIVE MULTI')
                 self.composeResponse(bot,order,dist,chatId)
 
     def composeResponse(self,bot,order,dist,chatId):
-        # text='ORDER!!!!!\n'
-        # text=text+'HARGA: '+order.hargaPassenger+'\n'
-        # text=text+'jarak ke penumpang '+dist+' KM\n'
         text=respL.orderToDriver(order.hargaPassenger,dist)
         bot.send_message(chatId,text)
         lat = order.dari['location']['latitude']

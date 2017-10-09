@@ -3,6 +3,7 @@ import logging
 from dbfunc.userData import UserData
 from handlers.locationDataHandler import LocationDataHandler
 import traceback
+import traceback
 
 logger = logging.getLogger()
 
@@ -16,7 +17,6 @@ class ConfLocDataHandler(LocationDataHandler):
             userdataTemp=None
             try:
                 userdataTemp=self.dbconnector.read(userKeyTemp)
-                print(userdataTemp)
             except Exception as e:
                 logger.error(str(e))
                 traceback.print_exc()
@@ -31,7 +31,8 @@ class ConfLocDataHandler(LocationDataHandler):
                 logger.info("dari data conf is saved to db")
             except Exception as e:
                 logger.error("fail dari data conf")
-                print(str(e))
+                traceback.print_exc()
+
 
     def getUserKeyTemp(self,message):
         return str(message.chat.id)+'locationTemp'

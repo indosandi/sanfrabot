@@ -2,7 +2,7 @@ import logging
 
 from dbfunc.userData import UserData
 from handlers.locationDataHandler import LocationDataHandler
-
+import traceback
 logger = logging.getLogger()
 
 class ConfLocKeDataHandler(LocationDataHandler):
@@ -15,7 +15,6 @@ class ConfLocKeDataHandler(LocationDataHandler):
             userdataTemp=None
             try:
                 userdataTemp=self.dbconnector.read(userKeyTemp)
-                print(userdataTemp)
             except Exception as e:
                 logger.error(str(e))
             if self.dbconnector.keyExist(userKey):
@@ -29,7 +28,7 @@ class ConfLocKeDataHandler(LocationDataHandler):
                 logger.info("ke data conf is saved to db")
             except Exception as e:
                 logger.error("fail ke data conf")
-                print(str(e))
+                traceback.print_exc()
 
     def getUserKeyTemp(self,message):
         return str(message.chat.id)+'locationTemp'

@@ -67,7 +67,6 @@ class Router(object):
     def route(self,message):
 
         strCurrentState=self.handler.getState(message.chat.id)
-        print(strCurrentState,'strCurrentState',message.chat.id)
         if strCurrentState in self.nameState:
             self.currentState=self.nameState[strCurrentState]
         elif strCurrentState is None:
@@ -77,7 +76,6 @@ class Router(object):
         nextCmd = self.getWordMessage(message)
         if (self.currentState.decideNext(message, self.inputDef)):
             if ((nextCmd, self.currentState) in self.nextDef):
-                print('DISPATCH RESPONSE')
                 self.dispatchResponse(message,nextCmd)
             else:
                 logger.info("command is not accepted")
@@ -85,7 +83,7 @@ class Router(object):
         else:
             repText=respL.inputSalah()
             self.bot.send_message(chat_id=message.chat.id,text=repText)
-            print('here here')
+            logger.info("command is wrong")
 
     def dispatchResponse(self,message,word):
 

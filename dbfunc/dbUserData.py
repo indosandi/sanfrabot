@@ -20,7 +20,6 @@ class DbUserData(DbRedis):
 
     def read(self,key):
         obj=super(DbUserData,self).read(key)
-        print(obj,'OBJ')
         return UserData.de_json(obj)
 
     def readOrder(self,key):
@@ -104,7 +103,6 @@ class DbUserData(DbRedis):
         lat=order.dari['location']['latitude']
         lng=order.dari['location']['longitude']
         query='GEORADIUS '+str(tipe)+' '+str(lng)+' '+str(lat)+' '+'2 km WITHDIST ASC'
-        print(query)
         out=None
         try:
             out=self.dbcon.execute_command(query)
