@@ -1,6 +1,7 @@
 import support.emojis as emo
 def pilihSiapa():
-    return emo.welcomeGirl+" Silahkan pilih: \n"+emo.rightArrow+"Pengemudi " +emo.pengemudi+"\n"+emo.rightArrow+"Penumpang "+emo.pengguna
+    return emo.welcomeGirl+" Silahkan pilih: \n"+emo.rightArrow+"Pengemudi " \
+           +emo.pengemudi+"\n"+emo.rightArrow+"Penumpang "+emo.pengguna+"\n"+emo.rightArrow+" Feedback"+emo.envelope
 
 def infoPengemudi():
     text=emo.welcomeGirl+"jika info sudah lengkap bisa langsung mangkal atau dilengkapi dulu ya\n"
@@ -117,4 +118,41 @@ def orderHowMany(jmlahDriver):
 
 def ketikHarga():
     text=emo.welcomeGirl+' Masukan harga yang diinginkan'
+    return text
+
+def inputSalah():
+    text=emo.welcomeGirl+' Ada input yang salah. Bisa dilanjutkan atau kembali ke awal dengan /reset'
+    return text
+
+def lokasiDariLengkap():
+    text=emo.welcomeGirl+' Berikut adalah beberapa cara memasukan lokasi:\n\n'
+    text+=emo.rightArrow+' Paling mudah yaitu ketik alamat dan kirim, saya akan cari alamat di map (peta)\n\n'
+    text+=emo.rightArrow+' Selain itu bisa juga dengan menekan tombol "Kirim lokasi" untuk mengakses GPS\n\n'
+    text+=emo.rightArrow+' Jika ingin membuka map (peta), tekan tombol attachment('+emo.paperclip+') dibawah dan pilih location. Lokasi bisa dipilih ' \
+              'di map atau di-search\n\n'
+    text+=emo.rightArrow+' Yg paling sy suka yaitu menggunakan foursquare untuk realtime location, ketik "@foursquare alamat-yg-dituju", tunggu sampe menu di atasnya muncul kemudian pilih'
+    return text
+
+def lokasiKeLengkap():
+    text=emo.welcomeGirl+' Berikut adalah beberapa cara memasukan lokasi:\n\n'
+    text+=emo.rightArrow+' Paling mudah yaitu ketik alamat dan kirim, saya akan cari alamat di map (peta)\n\n'
+    text+=emo.rightArrow+' Jika ingin membuka map (peta), tekan tombol attachment('+emo.paperclip+') dibawah dan pilih location. Lokasi bisa dipilih ' \
+              'di map atau di-search\n\n'
+    text+=emo.rightArrow+' Yg paling sy suka yaitu menggunakan foursquare untuk realtime location, ketik "@foursquare alamat-yg-dituju", tunggu sampe menu di atasnya muncul kemudian pilih'
+    return text
+
+def lokasiDari():
+    text=emo.welcomeGirl+' Tekan tombol "Kirim lokasi", untuk mengetahui cara-cara mudah mengirim lokasi ketik atau klik /lokasi'
+    return text
+
+def lokasiKe():
+    text=emo.welcomeGirl+' Masukan alamat tujuan, untuk mengetahui cara-cara mudah mengirim lokasi ketik atau klik /lokasi'
+    return text
+
+def feedback():
+    text=emo.welcomeGirl+' Silahkan beri saran, pertanyaan, atau laporan '
+    return text
+
+def feedbackAfter():
+    text=emo.welcomeGirl+' Terima kasih sudah kami terima'
     return text

@@ -1,13 +1,7 @@
 import uuid
-# from telegram.ext.dispatcher import run_async
-from states.messageState import MessageState
-from states.shareContactState import ShareContactState
-from states.shareLocationState import ShareLocationState
 import logging
-import time
+import support.respList as respL
 logger = logging.getLogger()
-from telebot.tele import TeleBot
-# import Exception
 class Router(object):
     contact = 'contact1235'
     location = 'location1235'
@@ -31,11 +25,11 @@ class Router(object):
 
     def addBot(self,bot):
         self.bot=bot
-        # decor=self.bot.message_handler(commands=['start'],regexp="st",func=None,content_types=['location', 'venue','contact','text'])
 
         decor=self.bot.message_handler(commands=['start','reset'],func=None)
-        # decor=self.bot.message_handler(commands=['start','reset'],func=lambda message: True,content_types=['location','venue','contact'])
         decor(self.routeInit)
+        decor=self.bot.message_handler(commands=['lokasi'],func=None)
+        decor(self.lokasiHandler)
         decor=self.bot.message_handler(regexp=".",func=None,content_types=['text'])
         decor(self.route)
         decor=self.bot.message_handler(func=lambda message: True,content_types=['location','venue','contact'])
@@ -54,6 +48,15 @@ class Router(object):
         self.inputDef[nextCmd] = currentState
         self.nextDef[(nextCmd, currentState)] = nextState
 
+    def lokasiHandler(self,message):
+        if (self.currentState.name=='dari-state'):
+            self.bot.send_message(message.chat.id,respL.lokasiDariLengkap())
+        elif (self.currentState.name=='ke-state'):
+            self.bot.send_message(message.chat.id,respL.lokasiKeLengkap())
+
+    def lokasiKeHandler(self,message):
+        self.bot.send_message(message.chat.id,respL.lokasiKeLengkap())
+
     def routeInit(self,message):
         self.initState.handlerPostcondition(self.bot,message)
         self.initState.handler(self.bot,message)
@@ -65,7 +68,6 @@ class Router(object):
 
         strCurrentState=self.handler.getState(message.chat.id)
         print(strCurrentState,'strCurrentState',message.chat.id)
-        # word = self.getWordMessage(message)
         if strCurrentState in self.nameState:
             self.currentState=self.nameState[strCurrentState]
         elif strCurrentState is None:
@@ -73,68 +75,30 @@ class Router(object):
         else:
             logger.error('NO STATE IS POSSIBLE')
         nextCmd = self.getWordMessage(message)
-        # print(nextCmd)
-        # print(self.nextDef)
         if (self.currentState.decideNext(message, self.inputDef)):
             if ((nextCmd, self.currentState) in self.nextDef):
                 print('DISPATCH RESPONSE')
                 self.dispatchResponse(message,nextCmd)
             else:
-                # if self.inlineRoute.proceed(self.bot,nextCmd,self.currentState):
-                #     logger.info('inline callback is accepted')
-                # else:
                 logger.info("command is not accepted")
                 self.handleSpec(self.currentState,self.bot,message)
-                # print(self.nameState)
-                # print(self.nextDef)
-                # print(nextCmd,self.currentState,'ELSE')
         else:
-            repText='input salah \n ketik /reset untuk ke awal'
+            repText=respL.inputSalah()
             self.bot.send_message(chat_id=message.chat.id,text=repText)
             print('here here')
 
-    # @run_async
     def dispatchResponse(self,message,word):
-        # fromUser=update.message.from_user
-        # chatText=update.message.text
-        # if fromUser is not None:
-        #     print(fromUser,'fromUser')
-        #     if chatText is not None:
-        #         print(chatText,'chatText')
-        # print(message.chat.id,'DISPATCH RESPONSE')
+
         self.currentState.handlerPrecondition(self.bot,message)
-        print(self.nextDef[(word, self.currentState)],'CURRENT_STATE 3')
-        print(word,self.currentState,'CURRENT_STATE 3')
         state = self.nextDef[(word, self.currentState)]
         state.handlerPostcondition(self.bot,message)
         state.handler(self.bot, message)
         self.currentState = state
-        print(self.currentState,'CURRENT STATE')
         self.handler.setState(message.chat.id,self.currentState.name)
-        # print(self.handler.getState(message.chat.id),'dispatchResponse',message.chat.id)
 
     def getWordMessage(self, message):
         return self.currentState.nextCmd(message)
-        # if isinstance(self.currentState, ShareContactState):
-        #     nextCmd=self.currentState.name
-        #     # print('GET SHARECONTACTSTATE')
-        #     # word = Router.contact
-        # elif isinstance(self.currentState, ShareLocationState):
-        #     nextCmd= self.currentState.name
-        #     # print('GET SHARECONTACTSTATE')
-        #     # word = Router.location
-        # elif isinstance(self.currentState, MessageState):
-        #     nextCmd= self.currentState.name
-        #     # word = Router.message
-        # else:
-        #     nextCmd = message.text
-        # return nextCmd
 
-    # def routeLocation(self,bot,update):
-    #     print('location here')
-    #     location=update.message.location
-    #     print(location)
     def handleSpec(self,state,bot,message):
         if state in self.specHandler:
-            print(state,'handle spec')
             self.specHandler[state].handleData(bot,message)
