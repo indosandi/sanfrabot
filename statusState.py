@@ -41,6 +41,7 @@ from handlers.driver.negoHandler import NegoHandler
 from handlers.resetHandler import ResetHandler
 import support.respList as respL
 from handlers.feedback.appendF import AppendF
+from handlers.passenger.lihatHandler import LihatHandler
 
 # from telegram import (KeyboardButton)
 # from telegram.ext import (CommandHandler, Filters, RegexHandler, ConversationHandler, MessageHandler)
@@ -129,6 +130,7 @@ class StatusState(object):
         markup=ReplyKeyboardRemove(selective=False)
         descMotor.addReplyMarkup(markup)
 
+
         ojkDriver=ButtonResponse()
         ojkDriver.addText(respL.userKendaraan())
         markup=ReplyKeyboardMarkup(row_width=2)
@@ -161,6 +163,8 @@ class StatusState(object):
         feedbackResponse.addText(respL.feedback())
         markup = ReplyKeyboardRemove(selective=False)
         feedbackResponse.addReplyMarkup(markup)
+
+
 
         initDriverSt = OptionButtonState()
         initDriverSt.setResponse(respInitDriver)
@@ -362,6 +366,18 @@ class StatusState(object):
         markup.add(item1)
         kembaliUser.addReplyKeyboard(markup)
 
+        lihatResponse = ButtonResponse()
+        lihatResponse.addText(respL.lihatDriver())
+        markup=ReplyKeyboardMarkup(row_width=2)
+        typeLihat={}
+        typeLihat['lihat']='Lihat'
+        typeLihat['order']='Order'
+        typeLihat['tutup']='Tutup'
+        item1=KeyboardButton(typeLihat['lihat'])
+        item2=KeyboardButton(typeLihat['order'])
+        item3=KeyboardButton(typeLihat['tutup'])
+        markup.add(item1,item2,item3)
+        lihatResponse.addReplyKeyboard(markup)
         # STATE----------
 
         initDrPsSt= OptionButtonState()
@@ -448,6 +464,14 @@ class StatusState(object):
         kembaliUserSt.setResponse(kembaliUser)
         kembaliUserSt.name='kembali-user-state'
 
+
+        lihatResponseSt=OptionButtonState()
+        lihatResponseSt.setResponse(lihatResponse)
+        lihatResponseSt.name='lihat-user-state'
+        handler=LihatHandler()
+        handler.setDbCon(db)
+        lihatResponseSt.setPreDataHandler(handler)
+
         self.router = Router(initDrPsSt)
         # self.router = Router(self.initState)
         dbredis=DbRedis()
@@ -492,7 +516,11 @@ class StatusState(object):
         self.router.addRoute(typeKembali['kembali'],kembaliDriverSt,initDriverSt)
 
         self.router.addRoute(initDrPs['passenger'],initDrPsSt,self.initState)
-        self.router.addRoute(init['find'],self.initState,passOrderSt)
+        self.router.addRoute(init['find'],self.initState,lihatResponseSt)
+        self.router.addRoute(typeLihat['order'],lihatResponseSt,passOrderSt)
+        self.router.addRoute(typeLihat['lihat'],lihatResponseSt,lihatResponseSt)
+        self.router.addRoute(typeLihat['tutup'],lihatResponseSt,self.initState)
+
         self.router.addRoute(opOrd['selese'],passOrderSt,self.initState)
         self.router.addRoute(init['mod'], self.initState, self.modifState)
         self.router.addRoute(mod['no'], self.modifState, self.respModNoSt)

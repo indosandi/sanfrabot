@@ -1,23 +1,24 @@
 from handlers.dataHandler import DataHandler
 from telebot.types import InlineKeyboardButton,InlineKeyboardMarkup
+import traceback
 class NegoHandler(DataHandler):
     def handleData(self, bot,message ):
         driverId = self.getUserKey(message)
         orderId = None
         try:
-            query = 'GET ' + driverId + 'nego '
+            query = 'GET ' + driverId + 'nego'
             orderId = self.dbconnector.dbcon.execute_command(query)
         except Exception as e:
-            print(str(e))
+            traceback.print_exc()
 
         if orderId is not None:
             try:
-                query = 'DEL ' + driverId + 'nego '
+                query = 'DEL ' + driverId + 'nego'
                 self.dbconnector.dbcon.execute_command(query)
             except Exception as e:
-                print(str(e))
+                traceback.print_exc()
 
-            harga = ''
+            harga = 'error'
             if message.text is not None:
                 harga = str(message.text)
             try:
@@ -26,10 +27,9 @@ class NegoHandler(DataHandler):
                 self.dbconnector.dbcon.execute_command(query)
 
                 # set new harga to driverId
-                query = 'SET ' + orderId+'d'+driverId + 'Hrg ' + harga
-                self.dbconnector.dbcon.execute_command(query)
+                self.dbconnector.dbcon.set(orderId+'d'+driverId + 'Hrg',harga)
             except Exception as e:
-                print(str(e))
+                traceback.print_exc()
 
             userOrder = orderId.split('Ord')[0]
             # bot.send_message(userOrder, text=driverId + ' ' + harga)
@@ -52,7 +52,10 @@ class NegoHandler(DataHandler):
         response='Driver '+nama+' INGIN harga '+harga+'\n'
 
         markup = InlineKeyboardMarkup(row_width=1)
-        data=orderId+'.'+'setuju.'+driverId
+        data=orderId+'@&'+'s@&'+driverId+'@&n'
+        # if len(data)>70:
+        #     data=data[:70]
+        #     bot.send_message(driverId, text='Harga terlalu panjang, mungkin dipotong')
         itembtn2 = InlineKeyboardButton('Pilih', callback_data=data)
         markup.add(itembtn2)
 

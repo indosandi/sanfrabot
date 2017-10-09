@@ -5,6 +5,7 @@ from dbfunc.dbUserData import DbUserData
 from telebot.types import InlineKeyboardButton,InlineKeyboardMarkup
 import support.emojis as emo
 import support.respList as respL
+import traceback
 logger = logging.getLogger()
 class InlineRoute(object):
 
@@ -35,22 +36,21 @@ class InlineRoute(object):
 
     def callback(self,call):
         data=call.data
-        listData=data.split('.')
-        print(data)
+        print(data,'data')
+        listData=data.split('@&')
         orderId=listData[0]
         buttonId=listData[1]
+        pilih='y'
         if len(listData)>2:
             driverId=listData[2]
+        if len(listData)>3:
+            driverId=listData[2]
+            pilih=listData[3]
         else:
             driverId='0'
         userId=str(call.from_user.id)
         userOrder=orderId.split('Ord')[0]
-        print(orderId,buttonId,userId,userOrder)
-        self.routeEntity(userId,buttonId,orderId,userOrder,driverId,call)
-        # print(call.data)
-        # print(call.chat_instance)
-        # print(call.from_user.id)
-        # print(call.message)
+        self.routeEntity(userId,buttonId,orderId,userOrder,driverId,pilih)
 
     def proceed(self,bot,nextCmd,state):
         # if state is one of a inlineState
@@ -62,7 +62,7 @@ class InlineRoute(object):
         #decide entity
         pass
 
-    def routeEntity(self,userId,actionEntity,orderId,userOrder,driverId,call):
+    def routeEntity(self,userId,actionEntity,orderId,userOrder,driverId,pilih):
         sender=None
         if str(userId)==str(userOrder):
             sender='Passenger'
@@ -77,12 +77,12 @@ class InlineRoute(object):
         # else:
         #     sender='Passenger'
             # self.userToDriver(actionEntity,orderId)
-        if actionEntity=='setuju' and sender=='Driver':
+        if actionEntity=='s' and sender=='Driver':
             self.driverAgree(userId,orderId,userOrder)
             # send response driver agree
-        elif actionEntity=='setuju' and sender=='Passenger':
-            self.agree(userId,orderId,driverId,call)
-        elif actionEntity=='nego' and sender=='Driver':
+        elif actionEntity=='s' and sender=='Passenger':
+            self.agree(userId,orderId,driverId,pilih)
+        elif actionEntity=='n' and sender=='Driver':
             self.driverAskPrice(userId,orderId,userOrder)
 
     def driverAgree(self,userId,orderId,userOrder):
@@ -93,11 +93,6 @@ class InlineRoute(object):
         status=orderData.status
         hargaPas=orderData.hargaPassenger
         harga=hargaPas
-        # if driverId in orderData.hargaDriver:
-        #     hargaDri=orderData.hargaDriver[driverId]
-        #     if orderData.hargaDriver[driverId] != 'x':
-        #         harga=hargaDri
-        #     else:
 
         if (status==DbUserData.STATUS_FILLED):
             self.bot.send_message(driverId,'Order sudah diambil')
@@ -124,7 +119,7 @@ class InlineRoute(object):
         lng=driver.location['location']['longitude']
         response='Driver '+nama+' SETUJU dengan harga '+harga+'\n'
         markup = InlineKeyboardMarkup(row_width=1)
-        data=orderId+'.'+'setuju.'+driverId
+        data=orderId+'@&'+'s@&'+driverId+'@&s'
         itembtn2 = InlineKeyboardButton('Pilih', callback_data=data)
         markup.add(itembtn2)
         self.bot.send_message(chatId,response , reply_markup=markup)
@@ -164,10 +159,35 @@ class InlineRoute(object):
                     pass
                 self.dbConUser.saveOrder(orderId,orderData)
 
-    def agree(self,userId,orderId,driverId,call):
+    def agree(self,userId,orderId,driverId,pilih):
         # driverId=str(userId+'Driver')
         orderData = self.dbConUser.readOrder(orderId)
         status=orderData.status
+        hargaAkhir='error'
+        print(pilih,'PILIH')
+        if pilih=='s':
+            hargaAkhir=orderData.hargaPassenger
+        elif pilih=='n':
+        # try:
+        #     query='EXISTS ' + orderId + 'd' + driverId + 'Hrg '
+        #     print(query,'query')
+        #     keyExist=self.dbConUser.dbcon.execute_command(query)
+        # except Exception as e:
+        #     traceback.print_exc()
+        #
+        # print(keyExist)
+        # if keyExist==1:
+            try:
+                hargaAkhir=self.dbConUser.dbcon.get(orderId + 'd' + driverId+'Hrg')
+            except Exception as e:
+                traceback.print_exc()
+                hargaAkhir='error'
+        # elif keyExist==0:
+        #     hargaAkhir=orderData.hargaPassenger
+        else:
+            hargaAkhir='error'
+        print(hargaAkhir)
+
         if (status == DbUserData.STATUS_FILLED):
             self.bot.send_message(userId, 'Order sudah diambil')
         elif (status == DbUserData.STATUS_CLOSED):
@@ -180,12 +200,12 @@ class InlineRoute(object):
                 self.dbConUser.saveOrder(orderId,orderData)
                 logger.info('order %s is filled wiht %s',orderId,userId)
                 passenger=self.dbConUser.read(userId)
-                text=respL.userSendInfo(passenger.nama,passenger.no)
+                text=respL.userSendInfo(passenger.nama,passenger.no,hargaAkhir)
                 self.bot.send_message(driverId,text)
 
                 driver=self.dbConDriver.read(driverId)
                 text=emo.sirine+emo.sirine+'\n'
-                text=respL.driverSendInfo(driver.nama,driver.no,driver.desc)
+                text=respL.driverSendInfo(driver.nama,driver.no,driver.desc,hargaAkhir)
                 self.bot.send_message(userId,text)
 
                 # remove driver from geo

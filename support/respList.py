@@ -46,7 +46,7 @@ def userData(no,nama,dari,ke,harga,ojek):
     for s in outStr:
         strOut = strOut + s + '\n'
 
-    text = emo.welcomeGirl + "jika info sudah lengkap bisa langsung cari ojek atau dilengkapi dulu ya\n"
+    text = emo.welcomeGirl + "jika info sudah lengkap bisa cari ojek atau dilengkapi dulu ya\n"
     text += 'Ketik /reset untuk ke awal'
     return strOut+'\n\n'+text
 
@@ -82,17 +82,19 @@ def userGetOrder():
     text=emo.welcomeGirl+'Selamat anda mendapatkan pengemudi'+emo.terumpet+emo.terumpet+', tekan "Kembali" untuk ke menu awal'
     return text
 
-def userSendInfo(name,no):
+def userSendInfo(name,no,harga):
     text = emo.bell+ emo.bell+emo.bell+ '\n'
     text +=emo.pengguna+ 'Penumpang ' + name + ' memilih anda\n'
     text = text +emo.smartphone+ 'No hp :' + no + '\n'
+    text = text +emo.pursu+ 'HARGA:' + harga + '\n'
     text = text +emo.whiteExcl+emo.whiteExcl+ 'Silahkan hubungi penumpang'+emo.whiteExcl+emo.whiteExcl
     return text
 
-def driverSendInfo(name,no,deskripsi):
+def driverSendInfo(name,no,deskripsi,harga):
     text = emo.bell+ emo.bell+ emo.bell+ '\n'
     text +=emo.pengemudi+ 'Pengemudi: ' + name + ' \n'
     text = text +emo.smartphone+ 'No hp: ' + no + ' \n'
+    text = text +emo.pursu+ 'HARGA: ' + harga + ' \n'
     text = text +emo.pageup+'Deskripsi:' + deskripsi+ '\n'
     text = text +emo.whiteExcl+emo.whiteExcl+ 'Silahkan hubungi pengemudi'+emo.whiteExcl+emo.whiteExcl
     return text
@@ -100,7 +102,10 @@ def driverSendInfo(name,no,deskripsi):
 def orderToDriver(harga,dist):
     text = emo.sirine+ emo.sirine+ emo.sirine+ '\n'
     text += 'ORDER!!!!!\n'
-    text = text + 'HARGA: ' + harga + '\n'
+    if harga=='0':
+        text = text + 'HARGA: Tidak ditetapkan\n'
+    else:
+        text = text + 'HARGA: ' + harga + '\n'
     text = text + 'jarak ke penumpang ' + dist + ' KM\n'
     return text
 
@@ -113,7 +118,7 @@ def noDriver():
     return text
 
 def orderHowMany(jmlahDriver):
-    text=emo.welcomeGirl+' Order akan dikirim ke ' + jmlahDriver + ' drivers. Mereka bisa setuju atau menawar harga'
+    text=emo.welcomeGirl+' Order sudah dikirim ke ' + jmlahDriver + ' drivers. Mereka bisa setuju atau menawar harga'
     return text
 
 def ketikHarga():
@@ -142,11 +147,13 @@ def lokasiKeLengkap():
     return text
 
 def lokasiDari():
-    text=emo.welcomeGirl+' Tekan tombol "Kirim lokasi", untuk mengetahui cara-cara mudah mengirim lokasi ketik atau klik /lokasi'
+    text=emo.welcomeGirl+' Tekan tombol "Kirim lokasi".\n'
+    text+=emo.rightArrow+' Untuk mengetahui cara-cara mudah mengirim lokasi ketik atau klik /lokasi'
     return text
 
 def lokasiKe():
-    text=emo.welcomeGirl+' Masukan alamat tujuan, untuk mengetahui cara-cara mudah mengirim lokasi ketik atau klik /lokasi'
+    text=emo.welcomeGirl+' Masukan alamat tujuan.\n'
+    text+=emo.rightArrow+' Untuk mengetahui cara-cara mudah mengirim lokasi ketik atau klik /lokasi'
     return text
 
 def feedback():
@@ -155,4 +162,20 @@ def feedback():
 
 def feedbackAfter():
     text=emo.welcomeGirl+' Terima kasih sudah kami terima'
+    return text
+
+def lihatDriver():
+    text=emo.welcomeGirl+' Sebelum mencari ojek, kita bisa melihat pengemudi di sekitar dulu\n'
+    text+=emo.rightArrow+' Tekan "Lihat" untuk melihat pengemudi di sekitar\n'
+    text+=emo.rightArrow+' Tekan "Order" untuk membuat order baru dan langsung mencari pengemudi. ' \
+                         'Pengemudi akan mendapatkan ' \
+                         'notif ketika anda menekan tombol ini'
+    return text
+
+def lihatDriverImg(number):
+    text=emo.welcomeGirl+str(number)+' lokasi pengemudi ditampilkan di atas'
+    return text
+
+def errorServ():
+    text=emo.bowing+ " service error"
     return text

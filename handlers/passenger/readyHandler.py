@@ -51,12 +51,12 @@ class ReadyHandler(DataHandler):
     def composeInline(self,bot,order,dist,chatId):
         harga=order.hargaPassenger
         markup=None
-        callSetuju=order.id+'.'+'setuju'
-        callNego=order.id+'.'+'nego'
+        callSetuju=order.id+'@&'+'s'
+        callNego=order.id+'@&'+'n'
         if harga =='0':
             #send only one button
             markup = InlineKeyboardMarkup(row_width=2)
-            itembtn2 = InlineKeyboardButton('setuju', callback_data=callSetuju)
+            itembtn2 = InlineKeyboardButton('Tetapkan harga', callback_data=callNego)
             markup.add(itembtn2)
         else:
             #send two button
