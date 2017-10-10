@@ -179,3 +179,7 @@ def lihatDriverImg(number):
 def errorServ():
     text=emo.bowing+ " service error"
     return text
+
+def tungguOrder():
+    text=emo.welcomeGirl+" Silahkan tunggu response dari pengemudi"
+    return text

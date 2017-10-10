@@ -245,7 +245,7 @@ class StatusState(object):
         markup = ReplyKeyboardMarkup(row_width=1)
         item = KeyboardButton(opOrd['selese'])
         markup.add(item)
-        ordStr.addText('.')
+        ordStr.addText(respL.tungguOrder())
         ordStr.addReplyKeyboard(markup)
 
         mod = {}
