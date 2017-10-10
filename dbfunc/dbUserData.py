@@ -53,6 +53,7 @@ class DbUserData(DbRedis):
         orderData.timestamp=timestamp
         orderData.dari=dari
         orderData.ke=ke
+        orderData.tipe=tipe
         orderData.status=DbUserData.STATUS_OPEN
 
         keyOrder=key+'Ord'+str(idOrder)
