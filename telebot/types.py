@@ -766,6 +766,7 @@ class KeyboardButton(Dictionaryable, JsonSerializable):
 
 
 class InlineKeyboardMarkup(Dictionaryable, JsonSerializable):
+
     def __init__(self, row_width=3):
         self.row_width = row_width
 

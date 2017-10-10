@@ -12,6 +12,5 @@ rbtPort=int(os.environ['rbtPort'])
 rbtPass=os.environ['rbtPass']
 
 bot = telebot.TeleBotMediator(API_TOKEN,rbtHost,rbtUser,rbtPass,rbtVhost,rbtPort,True)
-                      'mwauswng',5672,True)
 
 bot.polling()
