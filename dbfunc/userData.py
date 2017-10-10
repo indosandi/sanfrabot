@@ -16,7 +16,7 @@ class UserData(JsonDeserializable):
     DEF_NO='blm diisi'
     DEF_DARI='alamat blm diisi'
     DEF_KE='alamat blm diisi'
-    DEF_HRG='blm diisin'
+    DEF_HRG='blm diisi'
     DEF_NAME='blm diisi'
     DEF_OJK='motor'
     @classmethod
