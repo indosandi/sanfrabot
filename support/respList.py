@@ -118,7 +118,8 @@ def noDriver():
     return text
 
 def orderHowMany(jmlahDriver):
-    text=emo.welcomeGirl+' Order sudah dikirim ke ' + jmlahDriver + ' drivers. Mereka bisa setuju atau menawar harga'
+    text=emo.welcomeGirl+' Order sudah dikirim ke ' + jmlahDriver + ' drivers. Mereka bisa setuju atau menawar harga.\n'
+    text+=" Silahkan tunggu response dari pengemudi"
     return text
 
 def ketikHarga():
@@ -181,5 +182,5 @@ def errorServ():
     return text
 
 def tungguOrder():
-    text=emo.welcomeGirl+" Silahkan tunggu response dari pengemudi"
+    text=emo.welcomeGirl+" "
     return text
