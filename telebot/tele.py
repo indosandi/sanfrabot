@@ -19,7 +19,7 @@ console_output_handler = logging.StreamHandler(sys.stderr)
 console_output_handler.setFormatter(formatter)
 logger.addHandler(console_output_handler)
 
-logger.setLevel(logging.ERROR)
+logger.setLevel(logging.DEBUG)
 
 # from telebot \
 import apihelper, types, util
@@ -142,7 +142,8 @@ class TeleBotMediator:
         self.__stop_polling.clear()
         error_interval = .25
         credentials = pika.PlainCredentials(self.userRbt,self.passwd )
-        parameters = pika.ConnectionParameters(self.hostRbt, self.port,self.vhost , credentials)
+        parameters = pika.ConnectionParameters(self.hostRbt, self.port,self.vhost , credentials,
+                                               heartbeat_interval=30)
         connection = pika.BlockingConnection(parameters)
         channel = connection.channel()
         channel.queue_declare(queue='bot')
@@ -375,7 +376,8 @@ class TeleBot:
 
         logger.info('Started polling.')
         credentials = pika.PlainCredentials(self.userRbt, self.passwd)
-        parameters = pika.ConnectionParameters(self.hostRbt, self.port, self.vhost, credentials)
+        parameters = pika.ConnectionParameters(self.hostRbt, self.port, self.vhost, credentials,
+                                               heartbeat_interval=30)
         connection = pika.BlockingConnection(parameters)
         channel = connection.channel()
         channel.queue_declare(queue='bot')
