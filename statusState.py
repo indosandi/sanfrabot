@@ -42,6 +42,7 @@ from handlers.resetHandler import ResetHandler
 import support.respList as respL
 from handlers.feedback.appendF import AppendF
 from handlers.passenger.lihatHandler import LihatHandler
+from handlers.passenger.userName import UserName
 
 # from telegram import (KeyboardButton)
 # from telegram.ext import (CommandHandler, Filters, RegexHandler, ConversationHandler, MessageHandler)
@@ -254,6 +255,7 @@ class StatusState(object):
         mod['ke'] = 'Ke'
         mod['harga'] = 'Harga'
         mod['ojek'] = 'Kendaraan'
+        mod['nama'] = 'Nama'
         self.respMod = ButtonResponse()
         markup=ReplyKeyboardMarkup(row_width=2)
         itembtn1=KeyboardButton(mod['no'])
@@ -261,7 +263,8 @@ class StatusState(object):
         itembtn3=KeyboardButton(mod['ke'])
         itembtn4=KeyboardButton(mod['harga'])
         itembtn5=KeyboardButton(mod['ojek'])
-        markup.add(itembtn1,itembtn2,itembtn3,itembtn4,itembtn5)
+        itembtn6=KeyboardButton(mod['nama'])
+        markup.add(itembtn1,itembtn2,itembtn3,itembtn4,itembtn5,itembtn6)
         self.respMod.addText(respL.ubahInfo())
         self.respMod.addReplyKeyboard(markup)
 
@@ -294,6 +297,11 @@ class StatusState(object):
         markup=ReplyKeyboardRemove()
         markup.selective=False
         self.repsModKe.addReplyMarkup(markup)
+
+        namaPassenger = TextResponse()
+        namaPassenger.addText(respL.ubahNama())
+        markup = ReplyKeyboardRemove(selective=False)
+        namaPassenger.addReplyMarkup(markup)
         #
         self.respHarga=TextResponse()
         self.respHarga.addText(respL.userHarga())
@@ -434,6 +442,14 @@ class StatusState(object):
         handler= HargaDataHandler()
         handler.setDbCon(db)
         self.respHargaSt.setPreDataHandler(handler)
+
+        namaPassengerSt= MessageState()
+        namaPassengerSt.setResponse(namaPassenger)
+        namaPassengerSt.name = 'nama-state-user'
+        handler = UserName()
+        handler.setDbCon(db)
+        namaPassengerSt.setPreDataHandler(handler)
+
         #
         self.respOjkSt=OptionButtonState()
         self.respOjkSt.setResponse(self.respOjk)
@@ -528,9 +544,11 @@ class StatusState(object):
         self.router.addRoute(mod['ke'], self.modifState, self.repsModKeSt)
         self.router.addRoute(mod['harga'], self.modifState, self.respHargaSt)
         self.router.addRoute(mod['ojek'], self.modifState, self.respOjkSt)
+        self.router.addRoute(mod['nama'], self.modifState, namaPassengerSt)
         self.router.addRoute(self.repsModKeSt.name, self.repsModKeSt, self.repsModKeConfSt)
         self.router.addRoute(self.respModLocationSt.name, self.respModLocationSt, self.confLocSt)
         self.router.addRoute(self.respModNoSt.name, self.respModNoSt, self.initState)
+        self.router.addRoute(namaPassengerSt.name, namaPassengerSt, self.initState)
         self.router.addRoute(replyBool['n'], self.confLocSt, self.respModLocationSt)
         self.router.addRoute(replyBool['y'], self.confLocSt, self.initState)
         self.router.addRoute(replyBool['n'], self.repsModKeConfSt, self.repsModKeSt)

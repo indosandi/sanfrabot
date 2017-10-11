@@ -30,7 +30,8 @@ def ubahHp():
     return text
 
 def ubahNama():
-    text=emo.welcomeGirl+' Silahkan diketik nama-nya '
+    text = emo.welcomeGirl + ' Silahkan diketik nama-nya\n'
+    text += "ketik /reset untuk cancel dan kembali ke awal"
     return text
 
 def userData(no,nama,dari,ke,harga,ojek):
