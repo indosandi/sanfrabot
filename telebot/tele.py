@@ -9,6 +9,7 @@ import six
 import pickle
 
 import logging
+import traceback
 
 logger = logging.getLogger('TeleBot')
 formatter = logging.Formatter(
@@ -132,10 +133,14 @@ class TeleBotMediator:
 
     def __retrieve_updates_to_rbt(self,timeout,channel):
         updates=self.__retrieve_updates(timeout)
-        for update in updates:
+        if len(updates)==0:
+            update='0'
             channel.basic_publish(exchange='',routing_key='bot',body=pickle.dumps(update))
-            if update.update_id > self.last_update_id:
-                self.last_update_id = update.update_id
+        else:
+            for update in updates:
+                channel.basic_publish(exchange='',routing_key='bot',body=pickle.dumps(update))
+                if update.update_id > self.last_update_id:
+                    self.last_update_id = update.update_id
 
     def __non_threaded_polling(self, none_stop=False, interval=0, timeout=3):
         logger.info('Started polling.')
@@ -166,7 +171,8 @@ class TeleBotMediator:
                 self.__stop_polling.set()
                 connection.close()
                 break
-        logger.info('Stopped polling.')
+        logger.info('Stopped polling.!!!!!!!!!!!!!')
+        print('NOOOOOOO.!!!!!!!!!!!!!')
 
     def stop_polling(self):
         self.__stop_polling.set()
@@ -370,7 +376,13 @@ class TeleBot:
 
     def callback(self,ch, method, properties, body):
             updates=pickle.loads(body)
-            self.process_new_updates(updates)
+            if updates=='0':
+                pass
+            else:
+                try:
+                    self.process_new_updates(updates)
+                except Exception as e:
+                    traceback.print_exc()
 
     def __non_threaded_polling(self, none_stop=False, interval=0, timeout=3):
 
