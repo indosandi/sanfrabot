@@ -142,13 +142,15 @@ class StatusState(object):
         tipeD['delman']='delman'
         # tipeD['becak']='becak'
         tipeD['kapal']='kapal'
+        tipeD['bajaj']='bajaj'
         item1=KeyboardButton('motor')
         item2=KeyboardButton('mobil')
         item3=KeyboardButton('bentor')
         item4=KeyboardButton('delman')
         # item5=KeyboardButton('becak')
-        item6=KeyboardButton('kapal')
-        markup.add(item1,item2,item3,item4,item6)
+        item5=KeyboardButton('kapal')
+        item6=KeyboardButton('bajaj')
+        markup.add(item1,item2,item3,item4,item5,item6)
         ojkDriver.addReplyKeyboard(markup)
 
         kembaliDriver = ButtonResponse()
@@ -317,12 +319,14 @@ class StatusState(object):
         tipe['bentor']='bentor'
         tipe['delman']='delman'
         tipe['kapal']='kapal'
+        tipe['bajaj']='bajaj'
         item1=KeyboardButton('motor')
         item2=KeyboardButton('mobil')
         item3=KeyboardButton('bentor')
         item4=KeyboardButton('delman')
         item5=KeyboardButton('kapal')
-        markup.add(item1,item2,item3,item4,item5)
+        item6=KeyboardButton('bajaj')
+        markup.add(item1,item2,item3,item4,item5,item6)
         self.respOjk.addReplyKeyboard(markup)
 
         #
@@ -529,6 +533,7 @@ class StatusState(object):
         self.router.addRoute(tipeD['delman'],ojkDriverSt,initDriverSt)
         self.router.addRoute(tipeD['kapal'],ojkDriverSt,initDriverSt)
         self.router.addRoute(tipeD['bentor'],ojkDriverSt,initDriverSt)
+        self.router.addRoute(tipeD['bajaj'],ojkDriverSt,initDriverSt)
         self.router.addRoute(typeKembali['kembali'],kembaliDriverSt,initDriverSt)
 
         self.router.addRoute(initDrPs['passenger'],initDrPsSt,self.initState)
@@ -559,6 +564,7 @@ class StatusState(object):
         self.router.addRoute(tipe['bentor'],self.respOjkSt,self.initState)
         self.router.addRoute(tipe['delman'],self.respOjkSt,self.initState)
         self.router.addRoute(tipe['kapal'],self.respOjkSt,self.initState)
+        self.router.addRoute(tipe['bajaj'],self.respOjkSt,self.initState)
         self.router.addRoute(typeKembaliUser['kembali'],kembaliUserSt,self.initState)
 
         self.router.addRoute(initDrPs['feedback'],initDrPsSt,feedbackResponseSt)
