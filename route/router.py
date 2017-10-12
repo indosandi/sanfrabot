@@ -49,13 +49,12 @@ class Router(object):
         self.nextDef[(nextCmd, currentState)] = nextState
 
     def lokasiHandler(self,message):
-        if (self.currentState.name=='dari-state'):
+        print("DARI DARI")
+        strCurrentState=self.handler.getState(message.chat.id)
+        if (strCurrentState=='dari-state'):
             self.bot.send_message(message.chat.id,respL.lokasiDariLengkap())
-        elif (self.currentState.name=='ke-state'):
+        elif (strCurrentState=='ke-state'):
             self.bot.send_message(message.chat.id,respL.lokasiKeLengkap())
-
-    def lokasiKeHandler(self,message):
-        self.bot.send_message(message.chat.id,respL.lokasiKeLengkap())
 
     def routeInit(self,message):
         self.initState.handlerPostcondition(self.bot,message)
