@@ -8,9 +8,6 @@ import support.geocode as gserv
 
 class LocationDataHandler(DataHandler):
 
-    # def setRevGeoService(self,service):
-    #     self.revGeoServ=service
-
     def handleData(self, bot, message, response):
         venue=message.venue
         location=message.location

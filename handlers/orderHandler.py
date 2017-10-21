@@ -30,11 +30,6 @@ class OrderHandler(DataHandler):
             logger.error("fail order data conf")
             logger.error(str(e))
 
-        # getdriver nearby
-        # send message to driver
-
-        # your order is created
-
     def getUserKey(self, message):
         return str(message.chat.id)+'Order'+self.timeNow()
 

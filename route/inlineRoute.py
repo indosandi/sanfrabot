@@ -8,6 +8,17 @@ import support.respList as respL
 import traceback
 logger = logging.getLogger()
 class InlineRoute(object):
+    """ Class that handle inline button event
+
+    Attributes:
+        inlineState: the state where inline button is generated
+        finalState: the state after order is agreed upon
+        routeHandler: handler to get current state from nosql db
+        dbConUser: user db connector
+        dbConDriver : driver db connector
+        bot: bot instace from telebot
+
+    """
 
     def __init__(self):
         self.inlineState={}
@@ -35,6 +46,11 @@ class InlineRoute(object):
         self.bot.callback_query_handler(func=lambda call: True)(self.callback)
 
     def callback(self,call):
+        """
+        The function that handle inline button when pressed.
+        :param call: text data that carry from inline button
+        :return: None
+        """
         data=call.data
         listData=data.split('@&')
         orderId=listData[0]
@@ -51,17 +67,27 @@ class InlineRoute(object):
         userOrder=orderId.split('Ord')[0]
         self.routeEntity(userId,buttonId,orderId,userOrder,driverId,pilih)
 
-    def proceed(self,bot,nextCmd,state):
-        # if state is one of a inlineState
-        if state in self.inlineState:
-            self.inlineState[state].proceed(bot,nextCmd,state)
+    # def proceed(self,bot,nextCmd,state):
+    #     # if state is one of a inlineState
+    #     if state in self.inlineState:
+    #         self.inlineState[state].proceed(bot,nextCmd,state)
 
     #has dbdriver and dbuser
-    def receiveCall(self,bot,chatId,callData):
-        #decide entity
-        pass
+    # def receiveCall(self,bot,chatId,callData):
+    #     #decide entity
+    #     pass
 
     def routeEntity(self,userId,actionEntity,orderId,userOrder,driverId,pilih):
+        """
+        Function that route to another function depending on text data of inline button
+        :param userId: user id
+        :param actionEntity: information about which button was pressed
+        :param orderId: order Id associated with inline button
+        :param userOrder: user Id obtained from order info
+        :param driverId: driver id
+        :param pilih: 'y'
+        :return:
+        """
         sender=None
         if str(userId)==str(userOrder):
             sender='Passenger'
@@ -77,6 +103,13 @@ class InlineRoute(object):
             self.driverAskPrice(userId,orderId,userOrder)
 
     def driverAgree(self,userId,orderId,userOrder):
+        """
+        Handler when driver press setuju instead of nego
+        :param userId: user Id
+        :param orderId: order Id
+        :param userOrder: user from Order
+        :return:
+        """
 
         driverId=str(userId+'Driver')
         orderData=self.dbConUser.readOrder(orderId)
@@ -101,6 +134,14 @@ class InlineRoute(object):
                 self.dbConUser.saveOrder(orderId,orderData)
 
     def sendDriverAgreeInline(self,chatId,driverId,harga,orderId):
+        """
+        Handler to send to penumpang that pengemudi agree
+        :param chatId: chat id of telegram
+        :param driverId: driver id
+        :param harga: harga from order
+        :param orderId: order Id
+        :return:
+        """
                 # send only one button
         driver=self.dbConDriver.read(driverId)
         nama=driver.nama
@@ -116,6 +157,13 @@ class InlineRoute(object):
         self.bot.send_venue(chatId,lat,lng,'Lokasi pengemudi',alamat)
 
     def driverAskPrice(self,userId,orderId,userOrder):
+        """
+        Handler when pengemudi press nego button
+        :param userId: user Id
+        :param orderId: order Id
+        :param userOrder: user from Order
+        :return:
+        """
 
         driverId=str(userId+'Driver')
         orderData=self.dbConUser.readOrder(orderId)
@@ -148,6 +196,14 @@ class InlineRoute(object):
                 self.dbConUser.saveOrder(orderId,orderData)
 
     def agree(self,userId,orderId,driverId,pilih):
+        """
+        Handler when penumpang press pilih (memilih driver)
+        :param userId: user Id
+        :param orderId: order Id
+        :param driverId: driver Id
+        :param pilih: y
+        :return:
+        """
         # driverId=str(userId+'Driver')
         orderData = self.dbConUser.readOrder(orderId)
         status=orderData.status

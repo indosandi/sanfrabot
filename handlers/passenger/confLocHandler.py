@@ -3,7 +3,6 @@ import logging
 from dbfunc.userData import UserData
 from handlers.locationDataHandler import LocationDataHandler
 import traceback
-import traceback
 
 logger = logging.getLogger()
 

@@ -22,10 +22,8 @@ class DriverData(JsonDeserializable):
         ojek = obj[DriverData.OJEK]
         location=obj[DriverData.LOKASI]
         return cls(no=no,nama=nama,desc=desc,ojek=ojek,location=location)
-        # return cls(no,nama,noMotor,desc,ojek,location)
 
     def __init__(self,no=None,nama=None,desc=None,ojek=None,location=None,msg=None):
-    # def __init__(self,no=None,nama=None,noMotor=None,desc=None,ojek=None,location=None):
         self.no=no
         # self.noMotor=noMotor
         self.nama=nama
@@ -120,7 +118,6 @@ class DriverData(JsonDeserializable):
         return dic
 
     def ifNone(self,data):
-        # try:
         if data is None:
             return None
         else:

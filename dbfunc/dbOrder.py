@@ -18,9 +18,3 @@ class DbOrder(DbRedis):
         centerLat=ordernow.dari['location']['latitude']
         centerLng=ordernow.dari['location']['longitude']
         tipe=ordernow.tipe
-        #query based on 2 KM radius
-        # listDriver=self.dbcon
-
-        #convert into list
-
-        # return the list

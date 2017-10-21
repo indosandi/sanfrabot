@@ -3,6 +3,18 @@ import logging
 import support.respList as respL
 logger = logging.getLogger()
 class Router(object):
+    """ Class that route from input message to the corresponding handler and responsed
+
+       Attributes:
+           inputDef (dict): the state where inline button is generated
+           nextDef (dict): the state after order is agreed upon
+           currentState (string): current state
+           dbConUser: user db connector
+           dbConDriver : driver db connector
+           bot: bot instace from telebot
+           nameState:
+           specHandler
+       """
     contact = 'contact1235'
     location = 'location1235'
     message = 'message1235'
@@ -24,8 +36,12 @@ class Router(object):
         self.resetHandler=handler
 
     def addBot(self,bot):
+        """
+        Set bot from telebot and define all handler
+        :param bot:
+        :return:
+        """
         self.bot=bot
-
         decor=self.bot.message_handler(commands=['start','reset'],func=None)
         decor(self.routeInit)
         decor=self.bot.message_handler(commands=['lokasi'],func=None)
@@ -49,7 +65,11 @@ class Router(object):
         self.nextDef[(nextCmd, currentState)] = nextState
 
     def lokasiHandler(self,message):
-        print("DARI DARI")
+        """
+        Handler when user press /lokasi
+        :param message: message telebot
+        :return:
+        """
         strCurrentState=self.handler.getState(message.chat.id)
         if (strCurrentState=='dari-state'):
             self.bot.send_message(message.chat.id,respL.lokasiDariLengkap())
@@ -64,6 +84,11 @@ class Router(object):
         self.handler.setState(message.chat.id,self.initState.name)
 
     def route(self,message):
+        """
+        logic of route
+        :param message:
+        :return:
+        """
 
         strCurrentState=self.handler.getState(message.chat.id)
         if strCurrentState in self.nameState:
@@ -85,6 +110,12 @@ class Router(object):
             logger.info("command is wrong")
 
     def dispatchResponse(self,message,word):
+        """
+        Call response based of the state
+        :param message:
+        :param word:
+        :return:
+        """
 
         self.currentState.handlerPrecondition(self.bot,message)
         state = self.nextDef[(word, self.currentState)]

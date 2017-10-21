@@ -32,7 +32,6 @@ class NegoHandler(DataHandler):
                 traceback.print_exc()
 
             userOrder = orderId.split('Ord')[0]
-            # bot.send_message(userOrder, text=driverId + ' ' + harga)
             self.sendDriverAgreeInline(bot,userOrder,driverId,harga,orderId)
         else:
             bot.send_message(driverId, text='input tidak diteruskan')
@@ -53,9 +52,7 @@ class NegoHandler(DataHandler):
 
         markup = InlineKeyboardMarkup(row_width=1)
         data=orderId+'@&'+'s@&'+driverId+'@&n'
-        # if len(data)>70:
-        #     data=data[:70]
-        #     bot.send_message(driverId, text='Harga terlalu panjang, mungkin dipotong')
+
         itembtn2 = InlineKeyboardButton('Pilih', callback_data=data)
         markup.add(itembtn2)
 

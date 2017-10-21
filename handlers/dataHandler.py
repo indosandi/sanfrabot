@@ -12,11 +12,3 @@ class DataHandler(object):
     def handleData(self, bot,message , response):
         pass
 
-    # def writeData(self,key,data):
-    #     self.dbconnector.save(key,data)
-    #
-    # def readData(self,key):
-    #     return self.dbconnector.read(key)
-    #
-    # def checkExist(self,key):
-    #     return

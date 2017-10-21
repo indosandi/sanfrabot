@@ -11,7 +11,6 @@ errorLng=106.821003383
 def getLatLng(address):
 
     try:
-        # geocode_result = gmaps.geocode('1600 Amphitheatre Parkway, Mountain View, CA')
         geocode_result = gmaps.geocode(address)
         return geocode_result[0]['geometry']['location']
     except Exception as e:

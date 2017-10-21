@@ -19,7 +19,6 @@ class ReadyHandler(DataHandler):
         if len(listDr)==0:
             chatId=self.getUserKey(message)
             bot.send_message(chatId, respL.noDriver())
-        # if len(listDr)>0:
         else:
             drivers=listDr[0][::2]
             dists=listDr[0][1::2]

@@ -1,7 +1,6 @@
 from dbfunc.driverData import DriverData
 from handlers.dataHandler import DataHandler
 import logging
-import support.emojis as emo
 logger = logging.getLogger()
 
 class InitDriverHandler(DataHandler):

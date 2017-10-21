@@ -1,5 +1,4 @@
 from response import Response
-from telebot.types import (ReplyKeyboardMarkup)
 
 class ButtonResponse(Response):
     def addReplyKeyboard(self,markup ):

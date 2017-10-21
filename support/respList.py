@@ -18,7 +18,6 @@ def driverData(nama,no,ojek,lokasi,desc):
     strOut = ""
     for s in outStr:
         strOut = strOut + s + '\n'
-    # strOut=strOut+'Ketik /reset untuk ke awal'
     return strOut+'\n\n'+infoPengemudi()
 
 def ubahInfo():

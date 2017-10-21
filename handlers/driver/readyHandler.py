@@ -1,5 +1,4 @@
 from handlers.dataHandler import DataHandler
-from handlers.locationDataHandler import LocationDataHandler
 import logging
 import support.respList as respL
 logger = logging.getLogger()

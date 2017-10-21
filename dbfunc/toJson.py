@@ -1,6 +1,5 @@
 from telebot.types import Venue
 from telebot.types import Location
-# from dbfunc.userData import UserData
 
 
 def toJson(data):
@@ -8,8 +7,6 @@ def toJson(data):
         return toJsonVenue(data)
     elif (isinstance(data,Location)):
         return toJsonLocation(data)
-    # elif (isinstance(data,UserData)):
-    #     return toJsonUserData(data)
     else:
         return None
 
@@ -40,7 +37,6 @@ def toJsonVenue(data):
     return dic
 
 def ifNone(data):
-    # try:
     if data is None:
         return None
     else:

@@ -50,6 +50,9 @@ from handlers.passenger.userName import UserName
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s -%(funcName)10s()- %(levelname)s - %(message)s')
 
 class StatusState(object):
+    """
+    Class that define all state and responses
+    """
     def __init__(self,  key):
         self.key = key
         self.genAllResponses()
