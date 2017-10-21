@@ -14,8 +14,8 @@ class UserData(JsonDeserializable):
     OJEK = 'ojek'
 
     DEF_NO='blm diisi'
-    DEF_DARI='alamat blm diisi, default lokasi laut jawa'
-    DEF_KE='alamat blm diisi, default lokasi laut jawa'
+    DEF_DARI='alamat blm diisi, silahkan ubah info dari'
+    DEF_KE='alamat blm diisi, silahkan ubah info ke'
     DEF_HRG='blm diisi'
     DEF_NAME='blm diisi'
     DEF_OJK='motor'

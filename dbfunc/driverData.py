@@ -67,7 +67,7 @@ class DriverData(JsonDeserializable):
         if key==DriverData.LOKASI:
             if self.location is None:
                 location=Location(126.951420,-5.708185)
-                venue=Venue(location,'','alamat blm diset, default lokasi laut banda ',None)
+                venue=Venue(location,'','alamat blm diset, silahkan perbarui dulu',None)
                 self.location=toJson.toJson(venue)
         if key == DriverData.NAMA:
             if self.nama is None:
