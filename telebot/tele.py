@@ -10,19 +10,20 @@ import pickle
 
 import logging
 import traceback
+from logging.handlers import TimedRotatingFileHandler
+
 
 logger = logging.getLogger('TeleBot')
 formatter = logging.Formatter(
     '%(asctime)s (%(filename)s:%(lineno)d %(threadName)s) %(levelname)s - %(name)s: "%(message)s"'
 )
-
-console_output_handler = logging.StreamHandler(sys.stderr)
-console_output_handler.setFormatter(formatter)
-logger.addHandler(console_output_handler)
-
+handler = TimedRotatingFileHandler("./log/log.out",when="m",
+                                       interval=1440,
+                                       backupCount=7)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
-# from telebot \
 import apihelper, types, util
 
 """
