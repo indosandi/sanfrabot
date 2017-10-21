@@ -1,7 +1,7 @@
 #!/bin/bash
 while :
 do
-    python echo_bot.py > out.pusher
-    echo "runnint worker"
-    sleep 3
+    python pusher.py 
+    echo "running a pusher"
+    sleep 1
 done

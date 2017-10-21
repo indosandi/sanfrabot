@@ -1,3 +1,7 @@
 #!/bin/bash
-sh setup.sh
-nohup python main.py rbtconsumer $1 > out.main &
+for (( i=1; i<=30; i++ ))
+do
+   nohup python main.py rbtconsumer $i > out.main &
+   echo "$i"
+   sleep 1
+done
