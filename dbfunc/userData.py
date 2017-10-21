@@ -14,8 +14,8 @@ class UserData(JsonDeserializable):
     OJEK = 'ojek'
 
     DEF_NO='blm diisi'
-    DEF_DARI='alamat blm diisi'
-    DEF_KE='alamat blm diisi'
+    DEF_DARI='alamat blm diisi, default lokasi laut jawa'
+    DEF_KE='alamat blm diisi, default lokasi laut jawa'
     DEF_HRG='blm diisi'
     DEF_NAME='blm diisi'
     DEF_OJK='motor'
@@ -52,12 +52,12 @@ class UserData(JsonDeserializable):
                 self.no=UserData.DEF_NO
         if key==UserData.DARI:
             if self.dari is None:
-                location=Location(106.829285,-6.311525)
+                location=Location(112.240727,-4.953413)
                 venue=Venue(location,'lokasi',UserData.DEF_DARI,None)
                 self.dari=toJson.toJson(venue)
         if key==UserData.KE:
             if self.ke is None:
-                location=Location(106.829285,-6.311525)
+                location=Location(112.240727,-4.953413)
                 venue=Venue(location,'lokasi',UserData.DEF_KE,None)
                 self.ke=toJson.toJson(venue)
         if key== UserData.HARGA:
