@@ -3,7 +3,7 @@ import os
 
 from statusState import StatusState
 from telebot.tele import TeleBot
-
+from telebot.botWrap import BotWrap
 
 def main():
     # Create the EventHandler and pass it your bot's token.
@@ -16,7 +16,8 @@ def main():
     rbtVhost=os.environ['rbtVhost']
     rbtPort=int(os.environ['rbtPort'])
 
-    bot = TeleBot(API_TOKEN, rbtHost, rbtUser, rbtPass,rbtVhost, rbtPort, True)
+    # bot = TeleBot(API_TOKEN, rbtHost, rbtUser, rbtPass,rbtVhost, rbtPort, True)
+    bot = BotWrap(API_TOKEN, rbtHost, rbtUser, rbtPass,rbtVhost, rbtPort, True)
     sts=StatusState(None)
     sts.router.addBot(bot)
     sts.inlineRoute.addBot(bot)

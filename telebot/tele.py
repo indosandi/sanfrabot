@@ -30,7 +30,7 @@ import apihelper, types, util
 Module : telebot
 """
 
-class TeleBotMediator:
+class TeleBotMediator(object):
     """ This is TeleBot Class
 
     """
@@ -178,7 +178,7 @@ class TeleBotMediator:
     def stop_polling(self):
         self.__stop_polling.set()
 
-class TeleBot:
+class TeleBot(object):
     """ This is TeleBot Class
 
         """
