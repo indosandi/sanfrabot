@@ -46,8 +46,16 @@ from handlers.passenger.userName import UserName
 
 # from telegram import (KeyboardButton)
 # from telegram.ext import (CommandHandler, Filters, RegexHandler, ConversationHandler, MessageHandler)
-
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s -%(funcName)10s()- %(levelname)s - %(message)s')
+from logging.handlers import TimedRotatingFileHandler
+logger = logging.getLogger()
+formatter = logging.Formatter('%(asctime)s - %(name)s -%(funcName)10s()- %(levelname)s - %(message)s')
+# logger=logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s -%(funcName)10s()- %(levelname)s - %(message)s')
+handler = TimedRotatingFileHandler("./log/logWorker.out",when="m",
+                                       interval=1440,
+                                       backupCount=7)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 class StatusState(object):
     """

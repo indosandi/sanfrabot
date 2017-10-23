@@ -89,7 +89,7 @@ class Router(object):
         :param message:
         :return:
         """
-
+        logger.info(message)
         strCurrentState=self.handler.getState(message.chat.id)
         if strCurrentState in self.nameState:
             self.currentState=self.nameState[strCurrentState]
