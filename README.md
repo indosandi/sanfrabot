@@ -1,5 +1,5 @@
 # SANFRABOT
-Repo ini berisi source code dari [sanfrabot](https://t.me/sanfrabot). Sanfrabot adalah chat bot di dalam aplikasi pengirim pesan Telegram. Bot ini berfungsi sebagai aplikasi transportasi online di mana bot mampu mengubungkan pengemudi dan penumpang. Mencari pengemudi semudah berinteraksi dengan [sanfrabot](https://t.me/sanfrabot). Penjalan tentang [sanfrabot](https://t.me/sanfrabot) ditulis di [web sanfra](http://onjek.myfreesites.net)
+Repo ini berisi source code dari [sanfrabot](https://t.me/sanfrabot). Sanfrabot adalah chat bot di dalam aplikasi pengirim pesan Telegram. Bot ini berfungsi sebagai aplikasi transportasi online di mana bot mampu mengubungkan pengemudi dan penumpang. Mencari pengemudi semudah berinteraksi dengan [sanfrabot](https://t.me/sanfrabot). Penjelasan tentang [sanfrabot](https://t.me/sanfrabot) ditulis di [web sanfra](http://onjek.myfreesites.net)
 
 Sasaran pengguna dari [sanfrabot](https://t.me/sanfrabot) adalah masyarakat di daerah non-perkotaan seperti sub-urban, desa, kota kecil, dll. Karena siapapun boleh menggunakan [sanfrabot](https://t.me/sanfrabot), chatbot ini cocok digunakan oleh masyarakat dengan karakter ikatan antar individu masih kuat. Salah satu tujuan pembuatan [sanfrabot](https://t.me/sanfrabot) adalah membangun ekonomi kerakyatan dan men-demokratisasi transportasi online. 
 
@@ -18,7 +18,8 @@ Sanfrabot merupakan salah satu implementasi dari kertasrapi foundation yang berg
 # TATA CARA INSTALL
 Sejak awal [sanfrabot](https://t.me/sanfrabot) didesain mampu meng-handle load dengan skalabilitas horisontal. Dengan demikian, arsitektur [sanfrabot](https://t.me/sanfrabot) natively distributed services. Ada tiga services berbeda yaitu: rabbitmq (distributed queue), redis (nosql database), dan [sanfrabot](https://t.me/sanfrabot) code. Ketiga component tersebut bisa dideploy di server yang berbeda atau di satu server. Cara paling mudah yaitu menggunakan cloud service seperti cloudamqp.com dan redislab. 
 
-![sanfrainfra](img/sanfrainfra.png?raw=true "Title")
+![sanfrainfra](img/sanfrainfra.png?raw=true "Infrastruktur")
+
 Gambar di atas adalah arsitektur dari backend [sanfrabot](https://t.me/sanfrabot). Penjelasan tentang arsitektur [sanfrabot](https://t.me/sanfrabot) dijelaskan dibawah ini:
 1. No 1 adalah telegram api. Sumber data berasal dari telegram api
 2. No 2. adalah pusher.py. Python proses ini mengambil data dari telegram server dan memasukannya ke rabbitmq queue. Ada wrapper pusher.py yaitu rbtpusher.sh. Dengan menjalakan wrapper tersebut maka shell script akan merestart python process ( puhser.py) jika fail. 
