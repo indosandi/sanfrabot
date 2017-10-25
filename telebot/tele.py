@@ -22,7 +22,7 @@ handler = TimedRotatingFileHandler("./log/log.out",when="m",
                                        backupCount=7)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.debug)
+logger.setLevel(logging.DEBUG)
 
 import apihelper, types, util
 
