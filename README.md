@@ -18,6 +18,7 @@ Sanfrabot merupakan salah satu implementasi dari kertasrapi foundation yang berg
 # TATA CARA INSTALL
 Sejak awal [sanfrabot](https://t.me/sanfrabot) didesain mampu meng-handle load dengan skalabilitas horisontal. Dengan demikian, arsitektur [sanfrabot](https://t.me/sanfrabot) natively distributed services. Ada tiga services berbeda yaitu: rabbitmq (distributed queue), redis (nosql database), dan [sanfrabot](https://t.me/sanfrabot) code. Ketiga component tersebut bisa dideploy di server yang berbeda atau di satu server. Cara paling mudah yaitu menggunakan cloud service seperti cloudamqp.com dan redislab. 
 
+![sanfrainfra](img/sanfrainfra.png)
 Gambar di atas adalah arsitektur dari backend [sanfrabot](https://t.me/sanfrabot). Penjelasan tentang arsitektur [sanfrabot](https://t.me/sanfrabot) dijelaskan dibawah ini:
 1. No 1 adalah telegram api. Sumber data berasal dari telegram api
 2. No 2. adalah pusher.py. Python proses ini mengambil data dari telegram server dan memasukannya ke rabbitmq queue. Ada wrapper pusher.py yaitu rbtpusher.sh. Dengan menjalakan wrapper tersebut maka shell script akan merestart python process ( puhser.py) jika fail. 
@@ -63,7 +64,7 @@ Jika ingin kill all worker:
 source killMain.sh # kill semua worker
 ```
 
-Yah, selesai deh. Padahal masih pengen pusingin orang. Kalo mau tambah pusing boleh baca wiki-nya
+Yah, selesai deh. Padahal masih pengen pusingin orang. Kalo mau tambah pusing boleh baca kode atau wiki-nya ya
 
-Pusing-pusing tapi tetep perkuat komunitas open source ya
+Pusing-pusing tapi tetap perkuat komunitas open source ya. `Semangatnya pusing tak gentar menkoding yang benar`
 
