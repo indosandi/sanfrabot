@@ -29,7 +29,7 @@ Gambar di atas adalah arsitektur dari backend [sanfrabot](https://t.me/sanfrabot
 
 Selain component-component di atas, [sanfrabot](https://t.me/sanfrabot) menggunakan google API untuk melakukan reverse geocoding dan static map. Token dari google API dibutuhkan untuk melakukan reverse geocoding. 
 
-Semua rangkaian diatas bisa dideploy di multiple location. Selama variable-variable yang menunjuk ke system di atas diberikan, maka [sanfrabot](https://t.me/sanfrabot) is good to go. Isi variable-variable di dalam file setup.sh dan set setup.sh ke environment variables (source setup.sh). Berikut adalah penjelasan tentang variable-variable tersebut:
+Semua rangkaian diatas bisa dideploy di multiple location. Selama variable-variable yang menunjuk ke system di atas diberikan, maka [sanfrabot](https://t.me/sanfrabot) is good to go. Isi variable-variable di dalam file setup.sh dan set setup.sh ke environment variables (`source setup.sh`). Berikut adalah penjelasan tentang variable-variable tersebut:
 
 - GMAP: google token untuk melakukan geocoding
 - botToken: token telegram bot API
@@ -65,7 +65,10 @@ Jika ingin kill all worker:
 source killMain.sh # kill semua worker
 ```
 
-Yah, selesai deh. Padahal masih pengen pusingin orang. Kalo mau tambah pusing boleh baca kode atau wiki-nya ya
+Terima kasih kepada hasil karya open source [python API telegram](https://github.com/eternnoir/pyTelegramBotAPI). Project ini menggunakan API from [python API telegram](https://github.com/eternnoir/pyTelegramBotAPI)
+
+
+Yah, selesai deh. Padahal masih pengen pusingin orang. Kalo mau tambah pusing boleh baca kode atau wiki-nya ya. 
 
 Pusing-pusing tapi tetap perkuat komunitas open source ya. `Semangatnya pusing tak gentar menkoding yang benar`
 
