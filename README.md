@@ -12,7 +12,7 @@ Beberapa keunikan [sanfrabot](https://t.me/sanfrabot):
 Developer-developer lokal diharapkan bisa berkontribusi dengan melakukan pull-request atau dengan open issue buat non-developer (tester, bug reporting, feature request, creating tutorial, etc).
 
 Sanfrabot merupakan salah satu implementasi dari kertasrapi foundation yang bergerak dengan spirit:
-"Membuka akses teknologi dan ilmu pengetahuan seluas-luasnya kepada semua kalangan masyarakat sehingga mempercepat transfer idea dan interaksinya demi mencapai kesempatan yang sama dalam berkarya"
+"Membuka akses teknologi dan ilmu pengetahuan seluas-luasnya kepada semua kalangan masyarakat sehingga mempercepat transfer keahlian dan pembentukan kemahiran demi mencapai kesempatan yang sama dalam berkarya"
 
 
 # TATA CARA INSTALL
