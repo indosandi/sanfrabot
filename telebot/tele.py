@@ -22,7 +22,7 @@ handler = TimedRotatingFileHandler("./log/log.out",when="m",
                                        backupCount=7)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.debug)
 
 import apihelper, types, util
 
@@ -107,7 +107,7 @@ class TeleBotMediator(object):
         :raises ApiException when a call has failed.
         """
         if self.skip_pending:
-            # logger.debug('Skipped {0} pending messages'.format(self.__skip_updates()))
+            logger.debug('Skipped {0} pending messages'.format(self.__skip_updates()))
             self.skip_pending = False
         updates = self.get_updates(offset=(self.last_update_id + 1), timeout=timeout)
         return updates
