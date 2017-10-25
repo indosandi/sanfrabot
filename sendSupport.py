@@ -19,10 +19,7 @@ def main():
 
     bot = TeleBot(API_TOKEN, rbtHost, rbtUser, rbtPass,rbtVhost, rbtPort, True)
 
-    text="Terima kasih sudah memberikan feedback: " \
-         "'koordinat maps tidak sesuai saya di surabaya tetapi maps di kebuna... '\n" \
-         "Lokasi default memang kebun binatang ragunan, lokasi harus diperbarui terlebih dahulu\n" \
-         "Pertanyaan lebih lanjut silahkan chat to @sanfra"
+    text=""
     chatId=""
     bot.send_message(chatId,text)
 
